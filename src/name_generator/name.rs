@@ -1,35 +1,23 @@
 use crate::name_generator::chain::Chain;
 use crate::random_number;
 
-pub fn generate_name(c: &Chain) -> String {
-    let token = random_number!(usize)(0, c.tokens.len());
-    let mut chain = vec![c.tokens[token]];
-    let mut current_chain = c;
-    let temp_chain = Chain::new(vec![""]);
-    let mut depth = 0;
-
-    loop {
-        match *current_chain.rivet {
-            Some(data) => {
-                let skip = random_number!(usize)(0, 2);
-                if skip == 1 {
-                    let token = random_number!(usize)(0, data.tokens.len());
-                    chain.push(data.tokens[token]);
-                }
-
-                current_chain = data.rivet.unwrap_or(&temp_chain);
-            }
-            None => {
-                if depth > 0 {
-                    let token = random_number!(usize)(0, current_chain.tokens.len());
-                    chain.push(current_chain.tokens[token]);
-                }
-                break;
+pub fn generate_name(chain: &Vec<Chain>) -> String {
+    let mut name_parts: Vec<String> = vec![];
+    for (i, c) in chain.iter().enumerate() {
+        let token = random_number!(usize)(0, c.tokens.len());
+        if i == 0 {
+            name_parts.push(c.tokens[token].to_owned())
+        } else if i == chain.len() - 1 {
+            name_parts.push(c.tokens[token].to_owned());
+        } else {
+            let skip = random_number!(usize)(0, 2);
+            if skip == 1 {
+                let token = random_number!(usize)(0, c.tokens.len());
+                name_parts.push(c.tokens[token].to_owned());
             }
         }
-        depth += 1;
     }
-    chain.join("")
+    name_parts.join("")
 }
 
 #[cfg(test)]
@@ -38,7 +26,9 @@ mod tests {
     use crate::name_generator::name::generate_name;
     #[test]
     fn get_name() {
-        let first = Chain::new(vec!["Bg"]);
-        assert_eq!(generate_name(&first), "Bg");
+        let first = Chain::new(vec!["Aa".to_string()]);
+        let second = Chain::new(vec!["Bb".to_string()]);
+
+        assert_eq!(generate_name(&vec![first, second]), "AaBb");
     }
 }
