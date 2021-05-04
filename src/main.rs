@@ -9,7 +9,12 @@ use crate::name_generator::{
 
 fn main() {
     let config: GeneratorConfiguration = configuration::reader::read("./config.json").unwrap();
-    let chains = loader(&config);
+    let chains = loader(&config, "firstname");
+    for _i in 0..10 {
+        println!("{}", generate_name(&chains));
+    }
+
+    let chains = loader(&config, "lastname");
     for _i in 0..10 {
         println!("{}", generate_name(&chains));
     }

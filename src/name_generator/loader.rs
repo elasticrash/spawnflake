@@ -1,10 +1,18 @@
+use core::panic;
+
 use super::{chain::Chain, configuration::config_model::GeneratorConfiguration};
 
-pub fn loader(config: &GeneratorConfiguration) -> Vec<Chain> {
+pub fn loader(config: &GeneratorConfiguration, name: &str) -> Vec<Chain> {
     let mut chains: Vec<Chain> = vec![];
-    for rule in &config.name_generators[0].rules {
-        let chain = Chain::new(rule.to_vec());
-        chains.push(chain);
+    let name_generator = &config.name_generators.iter().find(|x| x.name == name);
+    match name_generator {
+        Some(data) => {
+            for rule in &data.rules {
+                let chain = Chain::new(rule.to_vec());
+                chains.push(chain);
+            }
+        }
+        None => panic!("no such name for a generator exists")
     }
 
     chains
