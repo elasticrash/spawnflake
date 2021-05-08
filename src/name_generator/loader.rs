@@ -1,6 +1,7 @@
+use crate::GeneratorConfiguration;
 use core::panic;
 
-use super::{chain::Chain, configuration::config_model::GeneratorConfiguration};
+use super::{chain::Chain};
 
 pub fn loader(config: &GeneratorConfiguration, name: &str) -> Vec<Chain> {
     let mut chains: Vec<Chain> = vec![];

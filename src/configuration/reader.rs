@@ -23,6 +23,9 @@ pub fn read(filename: &str) -> serde_json::Result<GeneratorConfiguration> {
             );
             config
         }
-        Err(_why) => panic!(),
+        Err(why) => {
+            println!("{}", why);
+            panic!()
+        }
     }
 }

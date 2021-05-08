@@ -1,11 +1,10 @@
 mod name_generator;
 #[macro_use]
 mod number_generator;
+mod configuration;
+use crate::configuration::config_model::GeneratorConfiguration;
+use crate::name_generator::loader::loader;
 use crate::name_generator::name::generate_name;
-use crate::name_generator::{
-    configuration::{self, config_model::GeneratorConfiguration},
-    loader::loader,
-};
 
 fn main() {
     let config: GeneratorConfiguration = configuration::reader::read("./config.json").unwrap();

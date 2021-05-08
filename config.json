@@ -16,5 +16,12 @@
                 ["th", "rck", "te", "rn", "ns", "en", "ll"]
             ]
         }
-    ]
+    ],
+    "mysql_configuration": {
+        "address": "localhost",
+        "port": 3306,
+        "user": "local",
+        "password": "password",
+        "schema": "test"
+    }
 }
