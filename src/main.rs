@@ -2,11 +2,11 @@ mod name_generator;
 #[macro_use]
 mod number_generator;
 mod configuration;
-use databases::mysql;
+use mysql::{Conn, Opts};
 
-use crate::configuration::config_model::GenericConfiguration;
 use crate::name_generator::loader::loader;
 use crate::name_generator::name::generate_name;
+use crate::{configuration::config_model::GenericConfiguration, databases::my_sql::discover};
 mod databases;
 
 fn main() {
@@ -20,8 +20,25 @@ fn main() {
         &config.mysql_configuration.port,
         &config.mysql_configuration.schema
     );
-    // mysql://root:password@localhost:3307/db_name
-    let connection = mysql::connection::create_connection(url);
+    let connection_options = match Opts::from_url(&url) {
+        Ok(data) => data,
+        Err(why) => {
+            panic!("{}", why);
+        }
+    };
+
+    let mut connection = match Conn::new(connection_options) {
+        Ok(con) => con,
+        Err(why) => {
+            panic!("{}", why);
+        }
+    };
+    
+    let tables = discover::get_tables(&mut connection, "test".to_string());
+    println!("available tables {:?}", tables);
+        
+    let fields = discover::get_columns(&mut connection, tables.unwrap().first().unwrap().to_string());
+    println!("available fields {:?}", fields);
 
     let firstname = loader(&config, "firstname");
     let lastname = loader(&config, "lastname");

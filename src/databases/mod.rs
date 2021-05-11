@@ -1,1 +1,1 @@
-pub mod mysql;
+pub mod my_sql;
