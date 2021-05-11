@@ -1,6 +1,7 @@
-create Table users as U {
-  id int 
-  firstname varchar
-  lastname varchar
-  age int
-}
+create table if not exists users
+(
+	id int not null primary key,
+	firstname varchar(255) null,
+	lastname varchar(255) null,
+	age int null
+);

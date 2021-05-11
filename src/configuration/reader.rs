@@ -3,14 +3,14 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-use super::config_model::GeneratorConfiguration;
+use super::config_model::GenericConfiguration;
 
 /**
  * ## Reads configuration from provided file
  * If file does not exist or we cannot read the content of the file,
  * we use the default values
  */
-pub fn read(filename: &str) -> serde_json::Result<GeneratorConfiguration> {
+pub fn read(filename: &str) -> serde_json::Result<GenericConfiguration> {
     let mut buffer = String::new();
     match File::open(filename) {
         Ok(mut file) => {
