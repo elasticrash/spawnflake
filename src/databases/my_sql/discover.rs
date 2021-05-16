@@ -14,23 +14,23 @@ pub fn get_tables(conn: &mut Conn, schema: String) -> Result<Vec<String>, Error>
 pub fn get_columns(conn: &mut Conn, table_name: String) -> Result<Vec<Describe>, Error> {
     return conn.query_map(
         format!("DESCRIBE {}", table_name),
-        |(Field, Type, Null, Key, Default, Extra)| Describe {
-            Field,
-            Type,
-            Null,
-            Key,
-            Default,
-            Extra,
+        |(field, data_type, null, key, default, extra)| Describe {
+            field,
+            data_type,
+            null,
+            key,
+            default,
+            extra,
         },
     );
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Describe {
-    Field: String,
-    Type: String,
-    Null: String,
-    Key: String,
-    Default: Option<String>,
-    Extra: String,
+    pub field: String,
+    pub data_type: String,
+    pub null: String,
+    pub key: String,
+    pub default: Option<String>,
+    pub extra: String,
 }

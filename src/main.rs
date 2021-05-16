@@ -5,8 +5,8 @@ mod configuration;
 
 use mysql::{Conn, Opts};
 
-use crate::name_generator::name::generate_name;
-use crate::{configuration::config_model::GenericConfiguration, databases::my_sql::discover};
+use crate::configuration::config_model::GenericConfiguration;
+use crate::{databases::generic::schema::read_schema, name_generator::name::generate_name};
 use crate::{databases::my_sql::insert, name_generator::loader::loader};
 mod databases;
 
@@ -35,29 +35,33 @@ fn main() {
         }
     };
 
-    let tables = discover::get_tables(&mut connection, "test".to_string());
-    println!("available tables {:?}", tables);
-
-    let fields = discover::get_columns(
-        &mut connection,
-        tables.unwrap().first().unwrap().to_string(),
-    );
-    println!("available fields {:?}", fields);
+    let schema = read_schema(&mut connection, "test".to_string());
+    println!("schema {:?}", schema);
 
     let firstname = loader(&config, "firstname");
     let lastname = loader(&config, "lastname");
 
-    for _i in 0..10 {
-        let _r = insert::insert_record(
-            &mut connection,
-            "users".to_string(),
-            "firstname,lastname,age".to_string(),
-            format!(
-                "'{}','{}',{}",
-                generate_name(&firstname),
-                generate_name(&lastname),
-                random_number!(i32)(18, 78)
-            ),
-        );
+    for table in schema {
+        let columns: Vec<String> = table
+        .clone()
+        .fields
+        .into_iter()
+        .filter(|a| a.extra != "auto_increment")
+        .map(|f| f.field)
+        .collect();
+
+        for _i in 0..100 {
+            let _r = insert::insert_record(
+                &mut connection,
+                table.table_name.to_owned(),
+                columns.join(","),
+                format!(
+                    "'{}','{}',{}",
+                    generate_name(&firstname),
+                    generate_name(&lastname),
+                    random_number!(i32)(18, 78)
+                ),
+            );
+        }
     }
 }
