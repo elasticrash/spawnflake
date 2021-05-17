@@ -1,9 +1,9 @@
-use crate::GeneratorConfiguration;
+use crate::GenericConfiguration;
 use core::panic;
 
 use super::{chain::Chain};
 
-pub fn loader(config: &GeneratorConfiguration, name: &str) -> Vec<Chain> {
+pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
     let mut chains: Vec<Chain> = vec![];
     let name_generator = &config.name_generators.iter().find(|x| x.name == name);
     match name_generator {

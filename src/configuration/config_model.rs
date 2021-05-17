@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 /// Top level configuration class
 #[derive(Deserialize, Clone, Debug, PartialEq)]
-pub struct GeneratorConfiguration {
+pub struct GenericConfiguration {
     pub name_generators: Vec<NameGenerator>,
     pub mysql_configuration: MySQLConfiguration,
 }
