@@ -1,7 +1,7 @@
 use crate::GenericConfiguration;
 use core::panic;
 
-use super::{chain::Chain};
+use super::chain::Chain;
 
 pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
     let mut chains: Vec<Chain> = vec![];
@@ -13,8 +13,16 @@ pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
                 chains.push(chain);
             }
         }
-        None => panic!("no such name for a generator exists")
+        None => panic!("no such name for a generator exists"),
     }
 
     chains
+}
+
+pub fn generator_exists(config: &GenericConfiguration, name: &str) -> bool {
+    let name_generator = &config.name_generators.iter().find(|x| x.name == name);
+    match name_generator {
+        Some(_) => true,
+        None => false,
+    }
 }
