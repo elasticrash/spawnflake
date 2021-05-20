@@ -1,9 +1,13 @@
 [package]
-name = "data-generator"
+name = "spawnflake"
+description = "random data generator"
 version = "0.1.0"
-authors = ["stefano <s.kouroupis@gmail.com>"]
+authors = ["stefanos.kouroupis <manekato@gmail.com>"]
 edition = "2018"
-
+repository = "https://github.com/elasticrash/spawnflake"
+license = "MIT"
+readme = "README.md"
+keywords = ["data-generator", "database tools"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

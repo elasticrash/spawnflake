@@ -1,20 +1,15 @@
-mod name_generator;
-#[macro_use]
-mod number_generator;
-mod configuration;
-
-use std::vec;
-
 use mysql::{Conn, Opts};
 
 use crate::{
-    configuration::config_model::GenericConfiguration, name_generator::loader::generator_exists,
+    configuration::config_model::GenericConfiguration,
+    databases::{generic::schema::read_schema, my_sql::insert},
+    name_generator::{
+        loader::{generator_exists, loader},
+        name::generate_name,
+    },
+    random_number,
     string_generator::strings::generate_alphas,
 };
-use crate::{databases::generic::schema::read_schema, name_generator::name::generate_name};
-use crate::{databases::my_sql::insert, name_generator::loader::loader};
-mod databases;
-mod string_generator;
 
 #[derive(Debug, Clone)]
 struct CdDt {
@@ -22,9 +17,7 @@ struct CdDt {
     data_type: String,
 }
 
-fn main() {
-    let config: GenericConfiguration = configuration::reader::read("./config.json").unwrap();
-
+pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record:i32) {
     let url = format!(
         "mysql://{}:{}@{}:{}/{}",
         &config.mysql_configuration.user,
@@ -47,8 +40,7 @@ fn main() {
         }
     };
 
-    let schema = read_schema(&mut connection, "test".to_string());
-    println!("schema {:?}", schema);
+    let schema = read_schema(&mut connection, schema_name);
 
     for table in schema {
         let columns: Vec<CdDt> = table
@@ -62,7 +54,7 @@ fn main() {
             })
             .collect();
 
-        for _i in 0..100 {
+        for _i in 0..no_of_record {
             let mut values: Vec<String> = vec![];
 
             for cd in &columns {

@@ -184,16 +184,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "data-generator"
-version = "0.1.0"
-dependencies = [
- "mysql",
- "rand 0.8.3",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "derive_utils"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -885,6 +875,16 @@ dependencies = [
  "cfg-if 1.0.0",
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "spawnflake"
+version = "0.1.0"
+dependencies = [
+ "mysql",
+ "rand 0.8.3",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

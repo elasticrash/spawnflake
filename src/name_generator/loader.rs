@@ -1,6 +1,5 @@
-use crate::GenericConfiguration;
 use core::panic;
-
+use crate::configuration::config_model::GenericConfiguration;
 use super::chain::Chain;
 
 pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
