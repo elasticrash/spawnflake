@@ -4,7 +4,7 @@ use super::chain::Chain;
 
 pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
     let mut chains: Vec<Chain> = vec![];
-    let name_generator = &config.name_generators.iter().find(|x| x.name == name);
+    let name_generator = &config.types.string.iter().find(|x| x.name == name);
     match name_generator {
         Some(data) => {
             for rule in &data.rules {
@@ -18,8 +18,10 @@ pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
     chains
 }
 
-pub fn generator_exists(config: &GenericConfiguration, name: &str) -> bool {
-    let name_generator = &config.name_generators.iter().find(|x| x.name == name);
+/// Checks if a name generator exists
+pub fn name_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
+    let name_generator = &config.types.string.iter().find(|x| x.name == name);
+
     match name_generator {
         Some(_) => true,
         None => false,

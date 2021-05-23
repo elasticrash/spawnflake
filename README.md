@@ -4,7 +4,10 @@ Spawnflake generates random data for relational databases. This is still in its 
 * generate data for mysql tables with no relations (no foreign keys)
 * supports varchar and int types
 * varchar types can be configured with specific patterns in the configuration file (config.json) else they will have random strings 
-* int generates values from 18 to 78 not configurable yet
+* configuration now supports integers, anything not in the configuration file will generate a random number from 0 to 2147483647
+
+## breaking changes
+* O.11 configuration is not backwards compatible with O.10
 
 ## Running the example
 

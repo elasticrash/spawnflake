@@ -1,3 +1,5 @@
+use crate::configuration::config_model::GenericConfiguration;
+
 #[macro_export]
 macro_rules! random_number {
     ($calc:ty) => {{
@@ -9,6 +11,28 @@ macro_rules! random_number {
         }
         rnd
     }};
+}
+
+pub fn generate_int_number(config: &GenericConfiguration, name: &str) -> i32 {
+    let pattern = config
+        .clone()
+        .types
+        .integer
+        .into_iter()
+        .find(|x| x.name == name)
+        .unwrap();
+
+    random_number!(i32)(pattern.rules[0], pattern.rules[1])
+}
+
+/// Checks if a integer generator exists
+pub fn int_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
+    let name_generator = &config.types.integer.iter().find(|x| x.name == name);
+
+    match name_generator {
+        Some(_) => true,
+        None => false,
+    }
 }
 
 #[cfg(test)]

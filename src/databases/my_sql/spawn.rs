@@ -4,9 +4,10 @@ use crate::{
     configuration::config_model::GenericConfiguration,
     databases::{generic::schema::read_schema, my_sql::insert},
     name_generator::{
-        loader::{generator_exists, loader},
+        loader::{loader, name_generator_exists},
         name::generate_name,
     },
+    number_generator::number::{generate_int_number, int_generator_exists},
     random_number,
     string_generator::strings::generate_alphas,
 };
@@ -17,7 +18,7 @@ struct CdDt {
     data_type: String,
 }
 
-pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record:i32) {
+pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i32) {
     let url = format!(
         "mysql://{}:{}@{}:{}/{}",
         &config.mysql_configuration.user,
@@ -58,14 +59,20 @@ pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record:i3
             let mut values: Vec<String> = vec![];
 
             for cd in &columns {
-                if generator_exists(&config, &cd.name) && cd.data_type.contains("varchar") {
+                if name_generator_exists(&config, &cd.name) && cd.data_type.contains("varchar") {
                     values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
                 } else if cd.data_type.contains("varchar") {
                     values.push(format!("'{}'", generate_alphas(5)));
-                }
-
-                if cd.data_type.eq("int") {
-                    values.push(format!("'{}'", random_number!(i32)(18, 78).to_string()));
+                } else if int_generator_exists(&config, &cd.name) && cd.data_type.eq("int") {
+                    values.push(format!(
+                        "'{}'",
+                        generate_int_number(&config, &cd.name).to_string()
+                    ));
+                } else if cd.data_type.eq("int") {
+                    values.push(format!(
+                        "'{}'",
+                        random_number!(i32)(0, 2147483647).to_string()
+                    ));
                 }
             }
 

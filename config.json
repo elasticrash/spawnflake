@@ -1,22 +1,77 @@
 {
-    "name_generators":[
-        {
-            "name": "firstname",
-            "rules": [
-                ["Jo", "Ni", "Ste", "Da", "Sco", "Ma"],
-                ["ve", "vi", "pha", "ro", "na", "ri"],
-                ["n", "ck", "tt", "d", "than", "na"]
-            ]
-        },
-        {
-            "name": "lastname",
-            "rules": [
-                ["Smi", "Cla", "Whi", "Ste", "Sco", "Bri", "Ru"],
-                ["ve", "sse", "te", "ho", "na", "ri"],
-                ["th", "rck", "te", "rn", "ns", "en", "ll"]
-            ]
-        }
-    ],
+    "types": {
+        "string": [
+            {
+                "name": "firstname",
+                "rules": [
+                    [
+                        "Jo",
+                        "Ni",
+                        "Ste",
+                        "Da",
+                        "Sco",
+                        "Ma"
+                    ],
+                    [
+                        "ve",
+                        "vi",
+                        "pha",
+                        "ro",
+                        "na",
+                        "ri"
+                    ],
+                    [
+                        "n",
+                        "ck",
+                        "tt",
+                        "d",
+                        "than",
+                        "na"
+                    ]
+                ]
+            },
+            {
+                "name": "lastname",
+                "rules": [
+                    [
+                        "Smi",
+                        "Cla",
+                        "Whi",
+                        "Ste",
+                        "Sco",
+                        "Bri",
+                        "Ru"
+                    ],
+                    [
+                        "ve",
+                        "sse",
+                        "te",
+                        "ho",
+                        "na",
+                        "ri"
+                    ],
+                    [
+                        "th",
+                        "rck",
+                        "te",
+                        "rn",
+                        "ns",
+                        "en",
+                        "ll"
+                    ]
+                ]
+            }
+        ],
+        "integer": [
+            {
+                "name": "age",
+                "rules": [
+                    10,
+                    99
+                ]
+            }
+        ]
+    },
     "mysql_configuration": {
         "address": "localhost",
         "port": 3306,

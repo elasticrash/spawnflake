@@ -3,14 +3,20 @@ use serde::Deserialize;
 /// Top level configuration class
 #[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct GenericConfiguration {
-    pub name_generators: Vec<NameGenerator>,
+    pub types: ValueTypes,
     pub mysql_configuration: MySQLConfiguration,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
-pub struct NameGenerator {
+pub struct ValueTypes {
+    pub string: Vec<Patterns<Vec<String>>>,
+    pub integer: Vec<Patterns<i32>>,
+}
+
+#[derive(Deserialize, Clone, Debug, PartialEq)]
+pub struct Patterns<T> {
     pub name: String,
-    pub rules: Vec<Vec<String>>,
+    pub rules: Vec<T>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
