@@ -1,4 +1,4 @@
-# 🐙❄️ Spawnflake 
+# 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
 Spawnflake generates random data for relational databases. This is still in its early stages. What it does so far:
 * generate data for mysql tables with no relations (no foreign keys)
