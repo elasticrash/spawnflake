@@ -44,6 +44,8 @@ pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i
     let schema = read_schema(&mut connection, schema_name);
 
     for table in schema {
+        println!("{:?}", table);
+
         let columns: Vec<CdDt> = table
             .clone()
             .fields
