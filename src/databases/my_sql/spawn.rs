@@ -16,6 +16,7 @@ use crate::{
 struct CdDt {
     name: String,
     data_type: String,
+    rel: bool,
 }
 
 pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i32) {
@@ -46,16 +47,29 @@ pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i
     for table in schema {
         println!("{:?}", table);
 
-        let columns: Vec<CdDt> = table
+        let mut columns: Vec<CdDt> = table
             .clone()
             .fields
             .into_iter()
             .filter(|a| a.extra != "auto_increment")
-            .map(|f| CdDt {
-                name: f.field,
-                data_type: f.data_type,
+            .map(|f| {
+                let exists = table
+                    .clone()
+                    .rel
+                    .into_iter()
+                    .any(|r| r.column_name == f.field);
+
+                return CdDt {
+                    name: f.field,
+                    data_type: f.data_type,
+                    rel: exists,
+                };
             })
             .collect();
+
+        columns.sort_by(|a, b| a.rel.cmp(&b.rel));
+
+        println!("{:?}", columns);
 
         for _i in 0..no_of_record {
             let mut values: Vec<String> = vec![];
