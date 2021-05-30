@@ -15,11 +15,12 @@ pub fn read_schema(conn: &mut Conn, schema: String) -> Vec<TableFields> {
 
     for t in tables.unwrap() {
         let fields = discover::get_columns(conn, t.to_string());
+        let get_foreign_keys = discover::get_foreign_keys(conn, t.to_string(), schema.clone());
+        
         table_fields.push(TableFields {
-            table_name: t,
+            table_name: t.clone(),
             fields: fields.unwrap(),
-            rel: discover::get_foreign_keys(conn, schema.clone())
-                .unwrap_or(vec![]),
+            rel: get_foreign_keys.unwrap_or(vec![]),
         })
     }
 
