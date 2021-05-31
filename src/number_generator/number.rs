@@ -1,5 +1,6 @@
 use crate::configuration::config_model::GenericConfiguration;
 
+/// macro that generates a random number regardless the type
 #[macro_export]
 macro_rules! random_number {
     ($calc:ty) => {{
@@ -13,6 +14,7 @@ macro_rules! random_number {
     }};
 }
 
+/// generates a random number (int) based on configuration rules
 pub fn generate_int_number(config: &GenericConfiguration, name: &str) -> i32 {
     let pattern = config
         .clone()
