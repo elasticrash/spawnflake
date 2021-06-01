@@ -11,6 +11,33 @@ pub fn get_tables(conn: &mut Conn, schema: String) -> Result<Vec<String>, Error>
     );
 }
 
+pub fn get_foreign_keys(
+    conn: &mut Conn,
+    table_name: String,
+    schema: String,
+) -> Result<Vec<ForeignKeyRel>, Error> {
+    return conn.query_map(
+        format!(
+            "SELECT
+                TABLE_NAME,
+                COLUMN_NAME,
+                REFERENCED_TABLE_NAME,
+                REFERENCED_COLUMN_NAME 
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA ='{}'
+                AND (TABLE_NAME = '{}' OR REFERENCED_TABLE_NAME ='{}')
+                AND REFERENCED_TABLE_NAME is not null",
+                schema, table_name, table_name
+        ),
+        |(table_name, column_name, referenced_table_name, referenced_column_name)| ForeignKeyRel {
+            table_name,
+            column_name,
+            referenced_table_name,
+            referenced_column_name,
+        },
+    );
+}
+
 pub fn get_columns(conn: &mut Conn, table_name: String) -> Result<Vec<Describe>, Error> {
     return conn.query_map(
         format!("DESCRIBE {}", table_name),
@@ -33,4 +60,12 @@ pub struct Describe {
     pub key: String,
     pub default: Option<String>,
     pub extra: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ForeignKeyRel {
+    pub table_name: String,
+    pub column_name: String,
+    pub referenced_table_name: String,
+    pub referenced_column_name: String,
 }
