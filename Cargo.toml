@@ -1,7 +1,7 @@
 [package]
 name = "spawnflake"
 description = "random data generator"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["stefanos.kouroupis <manekato@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/elasticrash/spawnflake"

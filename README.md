@@ -8,8 +8,8 @@ Spawnflake generates random data for relational databases. This is still in its 
 * configuration now supports integers, anything not in the configuration file will generate a random number from 0 to 2147483647
 
 ## breaking changes
-* O.11 configuration is not backwards compatible with O.10
-
+* O.1.1 configuration is not backwards compatible with O.1.0
+* O.1.3 uses the schema from the configuration and does not allow a custom value
 ## Running the example
 
 Running the example requires to run docker-compose inside the test folder. Obviously you need

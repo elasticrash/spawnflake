@@ -153,13 +153,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cli"
-version = "0.1.0"
-dependencies = [
- "spawnflake",
-]
-
-[[package]]
 name = "const_fn"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -882,6 +875,13 @@ dependencies = [
  "cfg-if 1.0.0",
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "spawnflake"
+version = "0.1.0"
+dependencies = [
+ "spawnflake 0.1.2",
 ]
 
 [[package]]

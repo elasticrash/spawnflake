@@ -6,17 +6,12 @@ use spawnflake::{
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let mut schema:String = "default".to_string();
-    let mut items:i32 = args[2].parse().unwrap_or(100);
+    let mut items:i32 = 100;
 
     if args.len() == 1 {
-        schema = args[1].parse().unwrap();
-    }
-
-    if args.len() > 2 {
-        items = args[2].parse().unwrap();
+        items = args[1].parse().unwrap();
     }
 
     let config: GenericConfiguration = configuration::reader::read("./config.json").unwrap();
-    spawn(&config, schema, items);
+    spawn(&config, config.mysql_configuration.schema, items);
 }
