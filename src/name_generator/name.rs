@@ -1,6 +1,7 @@
 use crate::name_generator::chain::Chain;
 use crate::random_number;
 
+/// generates a name based on chains
 pub fn generate_name(chain: &Vec<Chain>) -> String {
     let mut name_parts: Vec<String> = vec![];
     for (i, c) in chain.iter().enumerate() {
