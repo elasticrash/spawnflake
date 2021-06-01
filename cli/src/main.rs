@@ -7,11 +7,14 @@ use spawnflake::{
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut items:i32 = 100;
+    println!("{:?}", args);
 
-    if args.len() == 1 {
+    if args.len() > 1 {
         items = args[1].parse().unwrap();
     }
+    
+    println!("{}", items);
 
     let config: GenericConfiguration = configuration::reader::read("./config.json").unwrap();
-    spawn(&config, config.mysql_configuration.schema, items);
+    spawn(&config, items);
 }
