@@ -13,3 +13,6 @@ pub mod number_generator;
 
 /// generates random strings
 pub mod string_generator;
+
+/// generates random dates from 1970 to now
+pub mod date_generator;
