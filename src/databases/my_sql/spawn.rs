@@ -28,7 +28,7 @@ struct TempKeys {
     table_name: String,
 }
 
-pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i32) {
+pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
     let url = format!(
         "mysql://{}:{}@{}:{}/{}",
         &config.mysql_configuration.user,
@@ -51,7 +51,7 @@ pub fn spawn(config: &GenericConfiguration, schema_name: String, no_of_record: i
         }
     };
 
-    let schema = read_schema(&mut connection, schema_name);
+    let schema = read_schema(&mut connection, config.clone().mysql_configuration.schema);
 
     let mut temp_keys: Vec<TempKeys> = vec![];
     for table in schema {
