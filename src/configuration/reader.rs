@@ -17,8 +17,7 @@ pub fn read(filename: &str) -> serde_json::Result<GenericConfiguration> {
             file.read_to_string(&mut buffer).unwrap();
             let config = serde_json::from_str(&buffer);
             println!(
-                "[{}] - Reading {:?}",
-                line!(),
+                "* Reading Configuration from {:?}",
                 Path::new(filename).file_name()
             );
             config
