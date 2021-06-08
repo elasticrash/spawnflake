@@ -2,7 +2,7 @@ use std::io::{self, Write};
 
 use mysql::{Conn, Opts};
 
-use crate::{configuration::config_model::GenericConfiguration, databases::{generic::schema::read_schema, my_sql::insert}, date_generator::datetime::generate_datetime, name_generator::{
+use crate::{configuration::config_model::GenericConfiguration, databases::{generic::schema::read_schema, my_sql::{data_types::{check_if_numeric, generate_numeric}, insert}}, date_generator::datetime::generate_datetime, name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
     }, number_generator::number::{generate_int_number, int_generator_exists}, random_number, string_generator::strings::generate_alphas};
@@ -100,10 +100,10 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
                             "'{}'",
                             generate_int_number(&config, &cd.name).to_string()
                         ));
-                    } else if cd.data_type.eq("int") {
+                    } else if check_if_numeric(&cd.data_type) {
                         values.push(format!(
                             "'{}'",
-                            random_number!(i32)(0, 2147483647).to_string()
+                            generate_numeric(&cd.data_type)
                         ));
                     } else if cd.data_type.eq("datetime"){
                         values.push(format!(
@@ -130,7 +130,7 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
             let _r = insert::insert_record(
                 &mut connection,
                 table.table_name.to_owned(),
-                columns
+                columns // TODO: change this to supported types only
                     .clone()
                     .into_iter()
                     .map(|f| f.name)

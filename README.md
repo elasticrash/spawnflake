@@ -3,9 +3,21 @@
 Spawnflake generates random data for relational databases. This is still in its early stages. What it does so far:
 * generate data for mysql tables
 * supports simple foreign key relationships (non unique foreign keys)
-* supports varchar, int and datetime types
-* varchar types can be configured with specific patterns in the configuration file (config.json) else they will have random strings 
-* configuration now supports integers, anything not in the configuration file will generate a random number from 0 to 2147483647
+* supports random data for varchar,
+* supports random data for most numberic types
+ ```    
+    "int",
+    "smallint",
+    "tinyint",
+    "mediumint",
+    "bigint",
+    "decimal",
+    "float",
+    "double",
+```
+* supports random data for datetime type
+* configured values for varchars based on specific patterns in the configuration file (config.json)
+* configuration values for integers
 
 ## breaking changes
 * 0.1.1 configuration is not backwards compatible with 0.1.0

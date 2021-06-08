@@ -21,3 +21,19 @@ create table if not exists users
 	constraint users_address_id_fk
 		foreign key (address_id) references address (id)
 );
+
+
+create table numeric_types
+(
+	id int auto_increment
+		primary key,
+	int_type int null,
+	smallint_type smallint null,
+	tinint_type tinyint null,
+	mediumint_type mediumint null,
+	bigint_type bigint null,
+	decimal_type decimal null,
+	float_type float null,
+	double_type double null
+);
+
