@@ -5,7 +5,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
     - mysql
     - supports simple foreign key relationships (non unique foreign keys, int)
 * supports random data generator for the following types
-    * varchar (partial support, generates up to 5 characters)   
+    * varchar (generates max sized string)
     * int
     * smallint
     * tinyint

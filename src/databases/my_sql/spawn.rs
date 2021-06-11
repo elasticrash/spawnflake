@@ -2,10 +2,24 @@ use std::io::{self, Write};
 
 use mysql::{Conn, Opts};
 
-use crate::{configuration::config_model::GenericConfiguration, databases::{generic::schema::read_schema, my_sql::{data_types::{check_if_numeric, generate_numeric}, insert}}, date_generator::datetime::generate_datetime, name_generator::{
+use crate::{
+    configuration::config_model::GenericConfiguration,
+    databases::{
+        generic::schema::read_schema,
+        my_sql::{
+            data_types::{check_if_numeric, generate_numeric},
+            insert,
+        },
+    },
+    date_generator::datetime::generate_datetime,
+    name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
-    }, number_generator::number::{generate_int_number, int_generator_exists}, random_number, string_generator::strings::generate_alphas};
+    },
+    number_generator::number::{generate_int_number, int_generator_exists},
+    random_number,
+    string_generator::strings::generate_alphas,
+};
 
 use super::discover::ForeignKeyRel;
 
@@ -23,6 +37,7 @@ struct TempKeys {
     table_name: String,
 }
 
+#[allow(unused_must_use)]
 pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
     let url = format!(
         "mysql://{}:{}@{}:{}/{}",
@@ -94,32 +109,27 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
                     {
                         values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
                     } else if cd.data_type.contains("varchar") {
-                        values.push(format!("'{}'", generate_alphas(5)));
+                        values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                     } else if int_generator_exists(&config, &cd.name) && cd.data_type.eq("int") {
                         values.push(format!(
                             "'{}'",
                             generate_int_number(&config, &cd.name).to_string()
                         ));
                     } else if check_if_numeric(&cd.data_type) {
-                        values.push(format!(
-                            "'{}'",
-                            generate_numeric(&cd.data_type)
-                        ));
-                    } else if cd.data_type.eq("datetime"){
-                        values.push(format!(
-                            "'{}'",
-                            generate_datetime()
-                        ));
+                        values.push(format!("'{}'", generate_numeric(&cd.data_type)));
+                    } else if cd.data_type.eq("datetime") {
+                        values.push(format!("'{}'", generate_datetime()));
                     } else {
                         println!("type {} not currently supported", cd.data_type);
                     }
                 } else {
                     let fk_table = cd.clone().dep.unwrap().referenced_table_name;
-                    fk_table_data = temp_keys.clone()
+                    fk_table_data = temp_keys
+                        .clone()
                         .into_iter()
                         .find(|f| f.table_name == fk_table)
                         .unwrap();
-                    let fk_index =random_number!(i32)(0, fk_table_data.id.len() as i32);
+                    let fk_index = random_number!(i32)(0, fk_table_data.id.len() as i32);
                     values.push(format!(
                         "'{}'",
                         fk_table_data.id.get(fk_index as usize).unwrap()
