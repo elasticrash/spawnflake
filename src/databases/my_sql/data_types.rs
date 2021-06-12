@@ -1,3 +1,5 @@
+use core::num;
+
 use crate::random_number;
 
 pub fn check_if_numeric(ctype: &str) -> bool {
@@ -27,7 +29,36 @@ pub fn generate_numeric(ctype: &str) -> String {
     } else if ctype.starts_with("bigint") {
         random_number!(i128)(0, 2_i128.pow(63) - 1).to_string()
     } else if ctype.starts_with("decimal") {
-        random_number!(f32)(0., 10.).to_string()
+        let start_bytes = ctype.find("(").unwrap_or(0);
+        let end_bytes = ctype.find(")").unwrap_or(ctype.len());
+
+        let d_size = ctype[(start_bytes + 1)..end_bytes].split(",");
+        let md_size = d_size.collect::<Vec<&str>>();
+        if md_size.len() == 2 {
+            let a = md_size[0].parse::<i32>().unwrap_or(1);
+            let b = md_size[1].parse::<i32>().unwrap_or(1);
+
+            let mut num_a = "".to_string();
+            for _i in 0..a {
+                num_a = format!("{}{}", num_a, 9);
+            }
+
+            if b > 0 {
+                let mut num_b = "".to_string();
+                for _i in 0..b {
+                    num_b = format!("{}{}", num_b, 9);
+                }
+                num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
+                return format!("{}.{}", num_a, num_b,);
+            } else {
+                return format!("{}", num_a,);
+            }
+        }
+        return format!(
+            "{}.{}",
+            random_number!(i32)(1, 10).to_string(),
+            random_number!(i32)(1, 10).to_string(),
+        );
     } else if ctype.starts_with("float") {
         random_number!(f32)(0., f32::MAX).to_string()
     } else if ctype.starts_with("double") {
