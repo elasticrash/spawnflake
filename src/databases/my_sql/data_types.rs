@@ -48,7 +48,7 @@ pub fn generate_numeric(ctype: &str) -> String {
                 }
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
                 return format!(
-                    "{}.{}",
+                    "{}.{}",  //TODO: prefix zeros
                     random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string(),
                     random_number!(i128)(0, num_b.parse::<i128>().unwrap_or(1)).to_string(),
                 );
