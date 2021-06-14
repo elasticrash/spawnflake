@@ -7,7 +7,7 @@ use crate::{
     databases::{
         generic::schema::read_schema,
         my_sql::{
-            data_types::{check_if_numeric, generate_numeric},
+            data_types::{check_if_numeric, generate_numeric, DataTypes},
             insert,
         },
     },
@@ -62,7 +62,7 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
     };
 
     let schema = read_schema(&mut connection, config.clone().mysql_configuration.schema);
-
+    let dt = DataTypes::new();
     let mut temp_keys: Vec<TempKeys> = vec![];
     for table in schema {
         println!("");
@@ -105,19 +105,19 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
             let mut fk_table_data;
             for cd in &columns {
                 if cd.clone().fk == false {
-                    if name_generator_exists(&config, &cd.name) && cd.data_type.contains("varchar")
+                    if name_generator_exists(&config, &cd.name) && cd.data_type.contains(dt.varchar)
                     {
                         values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
-                    } else if cd.data_type.contains("varchar") {
+                    } else if cd.data_type.contains(dt.varchar) {
                         values.push(format!("'{}'", generate_alphas(&cd.data_type)));
-                    } else if int_generator_exists(&config, &cd.name) && cd.data_type.eq("int") {
+                    } else if int_generator_exists(&config, &cd.name) && cd.data_type.eq(dt.int) {
                         values.push(format!(
                             "'{}'",
                             generate_int_number(&config, &cd.name).to_string()
                         ));
                     } else if check_if_numeric(&cd.data_type) {
                         values.push(format!("'{}'", generate_numeric(&cd.data_type)));
-                    } else if cd.data_type.eq("datetime") {
+                    } else if cd.data_type.eq(dt.datetime) {
                         values.push(format!("'{}'", generate_datetime()));
                     } else {
                         println!("type {} not currently supported", cd.data_type);

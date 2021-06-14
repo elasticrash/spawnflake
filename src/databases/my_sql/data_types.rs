@@ -1,15 +1,52 @@
 use crate::random_number;
 
+pub struct DataTypes<'a> {
+    pub varchar: &'a str,
+    pub int: &'a str,
+    pub small_int: &'a str,
+    pub tiny_int: &'a str,
+    pub medium_int: &'a str,
+    pub big_int: &'a str,
+    pub decimal: &'a str,
+    pub float: &'a str,
+    pub double: &'a str,
+    pub datetime: &'a str,
+}
+
+impl<'a> DataTypes<'a> {
+    pub fn new() -> DataTypes<'a> {
+        DataTypes {
+            varchar: "varchar",
+            int: "int",
+            small_int: "smallint",
+            tiny_int: "tinyint",
+            medium_int: "mediumint",
+            big_int: "bigint",
+            decimal: "decimal",
+            float: "float",
+            double: "double",
+            datetime: "datetime",
+        }
+    }
+}
+
+impl Default for DataTypes<'_> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub fn check_if_numeric(ctype: &str) -> bool {
+    let dt = DataTypes::new();
     let accepted_values = vec![
-        "int",
-        "smallint",
-        "tinyint",
-        "mediumint",
-        "bigint",
-        "decimal",
-        "float",
-        "double",
+        dt.int,
+        dt.small_int,
+        dt.tiny_int,
+        dt.medium_int,
+        dt.big_int,
+        dt.decimal,
+        dt.float,
+        dt.double,
     ];
 
     accepted_values.into_iter().any(|x| ctype.starts_with(x))
@@ -48,12 +85,15 @@ pub fn generate_numeric(ctype: &str) -> String {
                 }
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
                 return format!(
-                    "{}.{}",  //TODO: prefix zeros
+                    "{}.{}", //TODO: prefix zeros
                     random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string(),
                     random_number!(i128)(0, num_b.parse::<i128>().unwrap_or(1)).to_string(),
                 );
             } else {
-                return format!("{}", random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string());
+                return format!(
+                    "{}",
+                    random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string()
+                );
             }
         }
         return format!(
