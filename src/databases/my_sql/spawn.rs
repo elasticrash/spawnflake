@@ -122,6 +122,8 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
                         values.push(format!("'{}'", generate_numeric(&cd.data_type)));
                     } else if cd.data_type.eq(const_types::DATETIME) {
                         values.push(format!("'{}'", generate_datetime()));
+                    } else if cd.data_type.contains(const_types::BIT) {
+                        values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
                     } else {
                         println!("type {} not currently supported", cd.data_type);
                     }

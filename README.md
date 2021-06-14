@@ -1,6 +1,6 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.6):
+carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.7):
 * db support
     - mysql
     - supports simple foreign key relationships (non unique foreign keys, int)
@@ -14,6 +14,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
     * decimal 
     * float
     * double
+    * bit
     * datetime
 * supports pattern based generated random data (config.json)
     * varchar

@@ -9,4 +9,5 @@ pub mod const_types {
     pub const FLOAT: &str = "float";
     pub const DOUBLE: &str = "double";
     pub const DATETIME: &str = "datetime";
+    pub const BIT: &str = "bit";
 }

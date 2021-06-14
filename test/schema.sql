@@ -33,7 +33,9 @@ create table numeric_types
 	mediumint_type mediumint null,
 	bigint_type bigint null,
 	decimal_type decimal null,
+	demical_2_type decimal(10,5) null,
 	float_type float null,
-	double_type double null
+	double_type double null,
+	bit_type bit null
 );
 
