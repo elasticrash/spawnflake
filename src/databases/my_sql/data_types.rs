@@ -1,15 +1,15 @@
-use crate::random_number;
+use crate::{databases::my_sql::const_types::const_types, random_number};
 
 pub fn check_if_numeric(ctype: &str) -> bool {
     let accepted_values = vec![
-        "int",
-        "smallint",
-        "tinyint",
-        "mediumint",
-        "bigint",
-        "decimal",
-        "float",
-        "double",
+        const_types::INT,
+        const_types::SMALLINT,
+        const_types::TINYINT,
+        const_types::MEDIUMINT,
+        const_types::BIGINT,
+        const_types::DECIMAL,
+        const_types::FLOAT,
+        const_types::DOUBLE,
     ];
 
     accepted_values.into_iter().any(|x| ctype.starts_with(x))
@@ -48,12 +48,15 @@ pub fn generate_numeric(ctype: &str) -> String {
                 }
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
                 return format!(
-                    "{}.{}",  //TODO: prefix zeros
+                    "{}.{}", //TODO: prefix zeros
                     random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string(),
                     random_number!(i128)(0, num_b.parse::<i128>().unwrap_or(1)).to_string(),
                 );
             } else {
-                return format!("{}", random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string());
+                return format!(
+                    "{}",
+                    random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string()
+                );
             }
         }
         return format!(
