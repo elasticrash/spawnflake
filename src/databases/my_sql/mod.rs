@@ -7,5 +7,6 @@ pub mod insert;
 /// Connects to db and decides what data will be generated
 pub mod spawn;
 
+mod const_types;
 /// checks if data_types are supported
 pub mod data_types;
