@@ -8,11 +8,12 @@ use crate::{
         generic::schema::read_schema,
         my_sql::{
             const_types::const_types,
-            data_types::{check_if_numeric, generate_numeric},
+            data_types::{
+                check_if_date_time, check_if_numeric, generate_date_time, generate_numeric,
+            },
             insert,
         },
     },
-    date_generator::datetime::generate_datetime,
     name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
@@ -119,9 +120,12 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
                             generate_int_number(&config, &cd.name).to_string()
                         ));
                     } else if check_if_numeric(&cd.data_type) {
-                        values.push(format!("'{}'", generate_numeric(&cd.data_type)));
-                    } else if cd.data_type.eq(const_types::DATETIME) {
-                        values.push(format!("'{}'", generate_datetime()));
+                        values.push(format!(
+                            "'{}'",
+                            generate_numeric(&cd.data_type).unwrap_or("0".to_string())
+                        ));
+                    } else if check_if_date_time(&cd.data_type) {
+                        values.push(format!("'{}'", generate_date_time(&cd.data_type).unwrap()));
                     } else if cd.data_type.contains(const_types::BIT) {
                         values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
                     } else {
