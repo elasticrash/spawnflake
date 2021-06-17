@@ -1,4 +1,8 @@
-use crate::{databases::my_sql::const_types::const_types, random_number};
+use crate::{
+    databases::my_sql::const_types::const_types,
+    date_generator::datetime::{generate_date, generate_datetime, generate_time},
+    random_number,
+};
 
 pub fn check_if_numeric(ctype: &str) -> bool {
     let accepted_values = vec![
@@ -15,18 +19,46 @@ pub fn check_if_numeric(ctype: &str) -> bool {
     accepted_values.into_iter().any(|x| ctype.starts_with(x))
 }
 
-pub fn generate_numeric(ctype: &str) -> String {
-    if ctype.starts_with("tinyint") {
-        random_number!(i8)(0, i8::MAX).to_string()
-    } else if ctype.starts_with("smallint") {
-        random_number!(i16)(0, i16::MAX).to_string()
-    } else if ctype.starts_with("mediumint") {
-        random_number!(i32)(0, 8388607).to_string()
-    } else if ctype.starts_with("int") {
-        random_number!(i32)(0, i32::MAX).to_string()
-    } else if ctype.starts_with("bigint") {
-        random_number!(i128)(0, 2_i128.pow(63) - 1).to_string()
-    } else if ctype.starts_with("decimal") {
+pub fn check_if_date_time(ctype: &str) -> bool {
+    let accepted_values = vec![
+        const_types::DATETIME,
+        const_types::DATE,
+        const_types::TIMESTAMP,
+        const_types::TIME,
+        const_types::YEAR,
+    ];
+
+    accepted_values.into_iter().any(|x| ctype.starts_with(x))
+}
+
+pub fn generate_date_time(ctype: &str) -> Option<String> {
+    if ctype.starts_with(const_types::DATETIME) {
+        Some(generate_datetime().to_string())
+    } else if ctype.starts_with(const_types::DATE) {
+        Some(generate_date().to_string())
+    } else if ctype.starts_with(const_types::TIMESTAMP) {
+        Some(generate_datetime().to_string())
+    } else if ctype.starts_with(const_types::TIME) {
+        Some(generate_time().to_string())
+    } else if ctype.starts_with(const_types::YEAR) {
+        Some(random_number!(i32)(1970, 2021).to_string())
+    } else {
+        None
+    }
+}
+
+pub fn generate_numeric(ctype: &str) -> Option<String> {
+    if ctype.starts_with(const_types::TINYINT) {
+        Some(random_number!(i8)(0, i8::MAX).to_string())
+    } else if ctype.starts_with(const_types::SMALLINT) {
+        Some(random_number!(i16)(0, i16::MAX).to_string())
+    } else if ctype.starts_with(const_types::MEDIUMINT) {
+        Some(random_number!(i32)(0, 8388607).to_string())
+    } else if ctype.starts_with(const_types::INT) {
+        Some(random_number!(i32)(0, i32::MAX).to_string())
+    } else if ctype.starts_with(const_types::BIGINT) {
+        Some(random_number!(i128)(0, 2_i128.pow(63) - 1).to_string())
+    } else if ctype.starts_with(const_types::DECIMAL) {
         let start_bytes = ctype.find("(").unwrap_or(0);
         let end_bytes = ctype.find(")").unwrap_or(ctype.len());
 
@@ -47,29 +79,29 @@ pub fn generate_numeric(ctype: &str) -> String {
                     num_b = format!("{}{}", num_b, 9);
                 }
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
-                return format!(
+                return Some(format!(
                     "{}.{}", //TODO: prefix zeros
                     random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string(),
                     random_number!(i128)(0, num_b.parse::<i128>().unwrap_or(1)).to_string(),
-                );
+                ));
             } else {
-                return format!(
+                return Some(format!(
                     "{}",
                     random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string()
-                );
+                ));
             }
         }
-        return format!(
+        return Some(format!(
             "{}.{}",
             random_number!(i32)(1, 10).to_string(),
             random_number!(i32)(1, 10).to_string(),
-        );
-    } else if ctype.starts_with("float") {
-        random_number!(f32)(0., f32::MAX).to_string()
-    } else if ctype.starts_with("double") {
-        random_number!(f32)(0., f32::MAX).to_string()
+        ));
+    } else if ctype.starts_with(const_types::FLOAT) {
+        Some(random_number!(f32)(0., f32::MAX).to_string())
+    } else if ctype.starts_with(const_types::DOUBLE) {
+        Some(random_number!(f32)(0., f32::MAX).to_string())
     } else {
-        "0".to_string()
+        None
     }
 }
 

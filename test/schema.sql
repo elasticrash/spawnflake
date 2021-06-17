@@ -39,3 +39,14 @@ create table numeric_types
 	bit_type bit null
 );
 
+create table if not exists date_types
+(
+	id int auto_increment
+		primary key,
+	date_type date null,
+	datetime_type datetime null,
+	timestamp_type timestamp null,
+	time_type time null,
+	year_type year null
+);
+
