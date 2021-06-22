@@ -5,16 +5,25 @@ use rand::Rng;
 pub fn generate_alphas(string_type: &str) -> String {
     let chars = "abcdefghijklmnopqrstuvwxyz";
 
-    let start_bytes = string_type.find("(").unwrap_or(0);
-    let end_bytes = string_type.find(")").unwrap_or(string_type.len());
+    if string_type.eq("text") {
+        let mut result = "".to_string();
+        for _i in 0..255 {
+            let rng = rand::thread_rng().gen_range(0..25);
+            result = format!("{}{}", result, chars.chars().nth(rng).unwrap());
+        }
+        result
+    } else {
+        let start_bytes = string_type.find("(").unwrap_or(0);
+        let end_bytes = string_type.find(")").unwrap_or(string_type.len());
 
-    let v_size = &string_type[(start_bytes + 1)..end_bytes];
-    let mut result = "".to_string();
-    for _i in 0..v_size.parse::<i32>().unwrap_or(1) {
-        let rng = rand::thread_rng().gen_range(0..25);
-        result = format!("{}{}", result, chars.chars().nth(rng).unwrap());
+        let v_size = &string_type[(start_bytes + 1)..end_bytes];
+        let mut result = "".to_string();
+        for _i in 0..v_size.parse::<i32>().unwrap_or(1) {
+            let rng = rand::thread_rng().gen_range(0..25);
+            result = format!("{}{}", result, chars.chars().nth(rng).unwrap());
+        }
+        result
     }
-    result
 }
 
 #[cfg(test)]

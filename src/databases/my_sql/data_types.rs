@@ -31,6 +31,25 @@ pub fn check_if_date_time(ctype: &str) -> bool {
     accepted_values.into_iter().any(|x| ctype.starts_with(x))
 }
 
+pub fn check_if_string(ctype: &str)-> bool {
+    let accepted_values = vec![
+        const_types::VARCHAR,
+        const_types::CHAR,
+        const_types::TEXT,
+    ];
+
+    accepted_values.into_iter().any(|x| ctype.starts_with(x))
+}
+
+pub fn check_if_binary(ctype: &str)-> bool {
+    let accepted_values = vec![
+        const_types::BINARY,
+        const_types::BLOB,
+    ];
+
+    accepted_values.into_iter().any(|x| ctype.starts_with(x))
+}
+
 pub fn generate_date_time(ctype: &str) -> Option<String> {
     if ctype.starts_with(const_types::DATETIME) {
         Some(generate_datetime().to_string())

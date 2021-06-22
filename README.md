@@ -20,6 +20,10 @@ carSpawnflake generates random data and/or based on patterns for relational data
     * timestamp
     * date
     * year
+    * char
+    * binary
+    * text
+    * blob
 * supports pattern based generated random data (config.json)
     * varchar
     * integer

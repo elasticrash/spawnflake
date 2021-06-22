@@ -16,3 +16,6 @@ pub mod string_generator;
 
 /// generates random dates from 1970 to now
 pub mod date_generator;
+
+/// generates bytes
+pub mod byte_generator;

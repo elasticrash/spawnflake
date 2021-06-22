@@ -7,6 +7,8 @@ pub fn insert_record(
     columns: String,
     values: String,
 ) -> Result<(), Error> {
+
+    println!("INSERT INTO {} ({}) VALUES ({})", table, columns, values);
     conn.exec_drop(
         format!("INSERT INTO {} ({}) VALUES ({})", table, columns, values),
         (),

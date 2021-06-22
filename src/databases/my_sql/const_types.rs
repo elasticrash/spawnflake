@@ -14,4 +14,8 @@ pub mod const_types {
     pub const TIME: &str = "time";
     pub const YEAR: &str = "year";
     pub const BIT: &str = "bit";
+    pub const CHAR: &str = "char";
+    pub const BINARY: &str = "binary";
+    pub const TEXT: &str = "text";
+    pub const BLOB: &str = "blob";
 }
