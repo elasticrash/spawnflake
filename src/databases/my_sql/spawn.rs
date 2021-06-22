@@ -115,7 +115,7 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
                     } else if check_if_string(&cd.data_type) {
                         values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                     } else if check_if_binary(&cd.data_type) {
-                        values.push(format!("0x{:X}", generate_bytes(&cd.data_type)));
+                        values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                     } else if int_generator_exists(&config, &cd.name)
                         && cd.data_type.eq(const_types::INT)
                     {
