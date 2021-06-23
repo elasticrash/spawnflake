@@ -9,7 +9,6 @@ use crate::{
         generic::{const_types::const_types, schema::read_schema},
         my_sql::{
             data_types::{
-                check_if_binary, check_if_date_time, check_if_numeric, check_if_string,
                 generate_date_time, generate_numeric,
             },
             insert,
@@ -106,8 +105,10 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
             let mut values: Vec<String> = vec![];
             let mut fk_table_data;
             for cd in &columns {
-                if cd.clone().fk == false {
-                    match &cd.data_type[..] {
+                if cd.clone().fk == false {   
+                    let end_bytes = cd.data_type.find("(").unwrap_or(cd.data_type.len());     
+
+                    match &cd.data_type[0..end_bytes] {
                         const_types::VARCHAR | const_types::CHAR | const_types::TEXT => {
                             if name_generator_exists(&config, &cd.name)
                                 && cd.data_type.contains(const_types::VARCHAR)
