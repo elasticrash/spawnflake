@@ -107,36 +107,56 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
             let mut fk_table_data;
             for cd in &columns {
                 if cd.clone().fk == false {
-                    if check_if_string(&cd.data_type) {
-                        if name_generator_exists(&config, &cd.name)
-                            && cd.data_type.contains(const_types::VARCHAR)
-                        {
-                            values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
-                        } else {
-                            values.push(format!("'{}'", generate_alphas(&cd.data_type)));
+                    match &cd.data_type[..] {
+                        const_types::VARCHAR | const_types::CHAR | const_types::TEXT => {
+                            if name_generator_exists(&config, &cd.name)
+                                && cd.data_type.contains(const_types::VARCHAR)
+                            {
+                                values.push(format!(
+                                    "'{}'",
+                                    generate_name(&loader(&config, &cd.name))
+                                ));
+                            } else {
+                                values.push(format!("'{}'", generate_alphas(&cd.data_type)));
+                            }
                         }
-                    } else if check_if_binary(&cd.data_type) {
-                        values.push(format!("0x{}", generate_bytes(&cd.data_type)));
-                    } else if check_if_numeric(&cd.data_type) {
-                        if int_generator_exists(&config, &cd.name)
-                            && cd.data_type.eq(const_types::INT)
-                        {
-                            values.push(format!(
-                                "'{}'",
-                                generate_int_number(&config, &cd.name).to_string()
-                            ));
-                        } else {
-                            values.push(format!(
-                                "'{}'",
-                                generate_numeric(&cd.data_type).unwrap_or("0".to_string())
-                            ));
+                        const_types::BINARY | const_types::BLOB => {
+                            values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                         }
-                    } else if check_if_date_time(&cd.data_type) {
-                        values.push(format!("'{}'", generate_date_time(&cd.data_type).unwrap()));
-                    } else if cd.data_type.contains(const_types::BIT) {
-                        values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
-                    } else {
-                        println!("type {} not currently supported", cd.data_type);
+                        const_types::INT
+                        | const_types::SMALLINT
+                        | const_types::TINYINT
+                        | const_types::MEDIUMINT
+                        | const_types::BIGINT
+                        | const_types::DECIMAL
+                        | const_types::FLOAT
+                        | const_types::DOUBLE => {
+                            if int_generator_exists(&config, &cd.name)
+                                && cd.data_type.eq(const_types::INT)
+                            {
+                                values.push(format!(
+                                    "'{}'",
+                                    generate_int_number(&config, &cd.name).to_string()
+                                ));
+                            } else {
+                                values.push(format!(
+                                    "'{}'",
+                                    generate_numeric(&cd.data_type).unwrap_or("0".to_string())
+                                ));
+                            }
+                        }
+                        const_types::DATETIME
+                        | const_types::DATE
+                        | const_types::TIMESTAMP
+                        | const_types::TIME
+                        | const_types::YEAR => {
+                            values
+                                .push(format!("'{}'", generate_date_time(&cd.data_type).unwrap()));
+                        }
+                        const_types::BIT => {
+                            values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
+                        }
+                        _ => println!("type {} not currently supported", cd.data_type),
                     }
                 } else {
                     let fk_table = cd.clone().dep.unwrap().referenced_table_name;
