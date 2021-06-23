@@ -1,6 +1,6 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.8):
+carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.9):
 * db support
     - mysql
     - supports simple foreign key relationships (non unique foreign keys, int)

@@ -7,5 +7,5 @@ use spawnflake::{
 
 fn main() {
     let config: GenericConfiguration = configuration::reader::read("./config.json").unwrap();
-    spawn(&config,  4);
+    spawn(&config,  10);
 }
