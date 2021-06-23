@@ -22,7 +22,6 @@ create table if not exists users
 		foreign key (address_id) references address (id)
 );
 
-
 create table numeric_types
 (
 	id int auto_increment
@@ -48,5 +47,16 @@ create table if not exists date_types
 	timestamp_type timestamp null,
 	time_type time null,
 	year_type year null
+);
+
+create table if not exists string_types
+(
+	id int auto_increment
+		primary key,
+	char_type char(2) null,
+	binary_type binary(5) null,
+	text_type text null,
+	blob_type blob null,
+	varchar_type varchar(44) null
 );
 

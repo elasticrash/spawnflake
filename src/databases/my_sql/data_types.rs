@@ -1,5 +1,5 @@
 use crate::{
-    databases::my_sql::const_types::const_types,
+    databases::generic::const_types::const_types,
     date_generator::datetime::{generate_date, generate_datetime, generate_time},
     random_number,
 };
@@ -27,6 +27,18 @@ pub fn check_if_date_time(ctype: &str) -> bool {
         const_types::TIME,
         const_types::YEAR,
     ];
+
+    accepted_values.into_iter().any(|x| ctype.starts_with(x))
+}
+
+pub fn check_if_string(ctype: &str) -> bool {
+    let accepted_values = vec![const_types::VARCHAR, const_types::CHAR, const_types::TEXT];
+
+    accepted_values.into_iter().any(|x| ctype.starts_with(x))
+}
+
+pub fn check_if_binary(ctype: &str) -> bool {
+    let accepted_values = vec![const_types::BINARY, const_types::BLOB];
 
     accepted_values.into_iter().any(|x| ctype.starts_with(x))
 }

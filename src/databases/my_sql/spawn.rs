@@ -3,13 +3,14 @@ use std::io::{self, Write};
 use mysql::{Conn, Opts};
 
 use crate::{
+    byte_generator::bytes::generate_bytes,
     configuration::config_model::GenericConfiguration,
     databases::{
-        generic::schema::read_schema,
+        generic::{const_types::const_types, schema::read_schema},
         my_sql::{
-            const_types::const_types,
             data_types::{
-                check_if_date_time, check_if_numeric, generate_date_time, generate_numeric,
+                check_if_binary, check_if_date_time, check_if_numeric, check_if_string,
+                generate_date_time, generate_numeric,
             },
             insert,
         },
@@ -106,24 +107,30 @@ pub fn spawn(config: &GenericConfiguration, no_of_record: i32) {
             let mut fk_table_data;
             for cd in &columns {
                 if cd.clone().fk == false {
-                    if name_generator_exists(&config, &cd.name)
-                        && cd.data_type.contains(const_types::VARCHAR)
-                    {
-                        values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
-                    } else if cd.data_type.contains(const_types::VARCHAR) {
-                        values.push(format!("'{}'", generate_alphas(&cd.data_type)));
-                    } else if int_generator_exists(&config, &cd.name)
-                        && cd.data_type.eq(const_types::INT)
-                    {
-                        values.push(format!(
-                            "'{}'",
-                            generate_int_number(&config, &cd.name).to_string()
-                        ));
+                    if check_if_string(&cd.data_type) {
+                        if name_generator_exists(&config, &cd.name)
+                            && cd.data_type.contains(const_types::VARCHAR)
+                        {
+                            values.push(format!("'{}'", generate_name(&loader(&config, &cd.name))));
+                        } else {
+                            values.push(format!("'{}'", generate_alphas(&cd.data_type)));
+                        }
+                    } else if check_if_binary(&cd.data_type) {
+                        values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                     } else if check_if_numeric(&cd.data_type) {
-                        values.push(format!(
-                            "'{}'",
-                            generate_numeric(&cd.data_type).unwrap_or("0".to_string())
-                        ));
+                        if int_generator_exists(&config, &cd.name)
+                            && cd.data_type.eq(const_types::INT)
+                        {
+                            values.push(format!(
+                                "'{}'",
+                                generate_int_number(&config, &cd.name).to_string()
+                            ));
+                        } else {
+                            values.push(format!(
+                                "'{}'",
+                                generate_numeric(&cd.data_type).unwrap_or("0".to_string())
+                            ));
+                        }
                     } else if check_if_date_time(&cd.data_type) {
                         values.push(format!("'{}'", generate_date_time(&cd.data_type).unwrap()));
                     } else if cd.data_type.contains(const_types::BIT) {
