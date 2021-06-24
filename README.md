@@ -1,40 +1,41 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.9):
+carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.0):
 * db support
     - mysql
-    - supports simple foreign key relationships (non unique foreign keys, int)
-* supports random data generator for the following types
-    * varchar (generates max sized string)
-    * int
-    * smallint
-    * tinyint
-    * mediumint
-    * bigint
-    * decimal 
-    * float
-    * double
-    * bit
-    * datetime
-    * time
-    * timestamp
-    * date
-    * year
-    * char
-    * binary
-    * text
-    * blob
-* supports pattern based generated random data (config.json)
-    * varchar
-    * integer
+    - postgres
+* supports the following:
+
+| Datastore      | Data type | Random Data Generator | Pattern Based Generator |
+| ----------- | ----------- |----------- | ----------- |
+| Mysql      | varchar       | ✔️      | ✔️       |
+| Mysql   | int        | ✔️      | ✔️       |
+| Mysql   | smallint        | ✔️      | ❌       |
+| Mysql   | tinyint        | ✔️      | ❌       |
+| Mysql   | mediumint        | ✔️      | ❌       |
+| Mysql   | bigint        | ✔️      | ❌       |
+| Mysql   | decimal        | ✔️      | ❌       |
+| Mysql   | float        | ✔️      | ❌       |
+| Mysql   | double        | ✔️      | ❌       |
+| Mysql   | bit        | ✔️      | ❌       |
+| Mysql   | time        | ✔️      | ❌       |
+| Mysql   | timestamp        | ✔️      | ❌       |
+| Mysql   | date        | ✔️      | ❌       |
+| Mysql   | year        | ✔️      | ❌       |
+| Mysql   | char        | ✔️      | ❌       |
+| Mysql   | binary        | ✔️      | ❌       |
+| Mysql   | text        | ✔️      | ❌       |
+| Mysql   | blob        | ✔️      | ❌       |
 
 ## breaking changes
-
-* 0.1.1 configuration is not backwards compatible with 0.1.0
+* 0.2.0 completely refactored, configuration is still the same
 * 0.1.3 uses the schema from the configuration and does not allow a custom value
 
-## Running the example
+## deprecations
+* 0.1.0 is going to be yanked
 
+
+## Running the example
 Running the example requires to run docker-compose inside the test folder. Obviously you need
 * docker
 * an sql client/ or a way to access the mysql cli (so as to see the generated records)
