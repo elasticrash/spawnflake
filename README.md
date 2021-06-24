@@ -1,6 +1,6 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.0):
+Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.0):
 * db support
     - mysql
     - postgres
@@ -34,6 +34,8 @@ carSpawnflake generates random data and/or based on patterns for relational data
 ## deprecations
 * 0.1.0 is going to be yanked
 
+## cli 
+under developement
 
 ## Running the example
 Running the example requires to run docker-compose inside the test folder. Obviously you need
