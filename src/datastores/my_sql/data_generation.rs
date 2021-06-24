@@ -23,15 +23,23 @@ use crate::{
     string_generator::strings::generate_alphas,
 };
 
-impl DataGeneration for Mysql {
+impl DataGeneration<Conn> for Mysql {
     fn spawn(&mut self, config: &GenericConfiguration, no_of_record: i32) {
+        let db_configuration = match &config.mysql_configuration {
+            Some(config) => config,
+            None => {
+                println!("Configuration not found skipping mysql data generator");
+                return;
+            }
+        };
+
         let url = format!(
             "mysql://{}:{}@{}:{}/{}",
-            &config.mysql_configuration.user,
-            &config.mysql_configuration.password,
-            &config.mysql_configuration.address,
-            &config.mysql_configuration.port,
-            &config.mysql_configuration.schema
+            &db_configuration.user,
+            &db_configuration.password,
+            &db_configuration.address,
+            &db_configuration.port,
+            &db_configuration.schema
         );
         let connection_options = match Opts::from_url(&url) {
             Ok(data) => data,
@@ -47,7 +55,11 @@ impl DataGeneration for Mysql {
             }
         };
 
-        <Mysql as DataGeneration>::set_schema(self, &mut connection, &config.mysql_configuration.schema);
+        <Mysql as DataGeneration<Conn>>::set_schema(
+            self,
+            &mut connection,
+            &db_configuration.schema,
+        );
 
         let mut temp_keys: Vec<TempKeys> = vec![];
         for table in &self.schema {
@@ -202,11 +214,5 @@ impl DataGeneration for Mysql {
         Self {
             schema: table_fields,
         }
-    }
-}
-
-impl Default for Mysql {
-    fn default() -> Self {
-        Self::new()
     }
 }

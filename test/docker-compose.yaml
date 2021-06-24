@@ -3,7 +3,7 @@ services:
   testdb:
     build:
       context: .
-      dockerfile: Db.Dockerfile
+      dockerfile: Mysql.Dockerfile
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -13,4 +13,14 @@ services:
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
-    container_name: testnetls
+    container_name: mysqlnet
+  db:
+    build:
+      context: .
+      dockerfile: Postgres.Dockerfile
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    container_name: psqlnet
