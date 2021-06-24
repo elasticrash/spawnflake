@@ -1,5 +1,5 @@
 use crate::{
-    databases::generic::const_types::const_types,
+    datastores::generic::const_types::const_types,
     date_generator::datetime::{generate_date, generate_datetime, generate_time},
     random_number,
 };
@@ -80,7 +80,7 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::databases::my_sql::data_types::{generate_date_time, generate_numeric};
+    use crate::datastores::my_sql::data_types::{generate_date_time, generate_numeric};
 
     #[test]
     fn generate_numeric_succesfully() {
@@ -103,5 +103,11 @@ mod tests {
                 .unwrap_or(1)
                 > 1969
         );
+    }
+
+    #[test]
+    fn generate_time_succesfully() {
+        // bits are not supported yet
+        assert!(generate_date_time("time").unwrap().len() == 8);
     }
 }

@@ -1,4 +1,4 @@
-use crate::{databases::generic::const_types::const_types, random_number};
+use crate::{datastores::generic::const_types::const_types, random_number};
 
 pub fn generate_bytes(binary_type: &str) -> String {
     let mut result = "".to_string();
