@@ -1,7 +1,4 @@
-#[derive(Debug, Clone)]
-pub struct TableFields {
-    pub table_name: String,
-}
+use crate::datastores::generic::common_models::TableFields;
 
 #[derive(Debug, Clone)]
 pub struct Postgres {

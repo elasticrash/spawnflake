@@ -2,26 +2,14 @@ use std::io::{self, Write};
 
 use mysql::{Conn, Opts};
 
-use crate::{
-    byte_generator::bytes::generate_bytes,
-    configuration::config_model::GenericConfiguration,
-    datastores::{
-        datastore::DataGeneration,
-        generic::const_types::const_types,
-        my_sql::{
+use crate::{byte_generator::bytes::generate_bytes, configuration::config_model::GenericConfiguration, datastores::{datastore::DataGeneration, generic::{common_models::TableFields, const_types::const_types}, my_sql::{
             data_types::{generate_date_time, generate_numeric},
-            datastore_models::{CdDt, Mysql, TableFields, TempKeys},
+            datastore_models::{CdDt, Mysql, TempKeys},
             discover, insert,
-        },
-    },
-    name_generator::{
+        }}, name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
-    },
-    number_generator::number::{generate_int_number, int_generator_exists},
-    random_number,
-    string_generator::strings::generate_alphas,
-};
+    }, number_generator::number::{generate_int_number, int_generator_exists}, random_number, string_generator::strings::generate_alphas};
 
 impl DataGeneration<Conn> for Mysql {
     fn spawn(&mut self, config: &GenericConfiguration, no_of_record: i32) {

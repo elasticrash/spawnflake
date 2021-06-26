@@ -1,6 +1,6 @@
 use mysql::prelude::*;
 use mysql::{Conn, Error};
-use super::datastore_models::{ForeignKeyRel, Describe};
+use crate::datastores::generic::common_models::{Describe, ForeignKeyRel};
 
 pub fn get_tables(conn: &mut Conn, schema: String) -> Result<Vec<String>, Error> {
     return conn.query_map(
