@@ -19,12 +19,11 @@ impl DataGeneration<Client> for Postgres {
         };
 
         let connection_string = format!(
-            "host={} user={} password={} port={} schema={}",
+            "host={} user={} password={} port={}",
             &db_configuration.address,
             &db_configuration.user,
             &db_configuration.password,
             &db_configuration.port,
-            &db_configuration.schema
         );
 
         let mut client = match Client::connect(connection_string.as_str(), NoTls) {
@@ -46,7 +45,7 @@ impl DataGeneration<Client> for Postgres {
     fn set_schema(&mut self, client: &mut Client, schema: &String) {
         let tables = discover::get_tables(client, schema.clone());
         for t in tables.unwrap() {
-            let fields = discover::get_columns(client, t.to_string());
+            let fields = discover::get_columns(client, t.to_string(), schema.to_string());
             let get_foreign_keys =
                 discover::get_foreign_keys(client, t.to_string(), schema.clone());
 
@@ -59,6 +58,9 @@ impl DataGeneration<Client> for Postgres {
     }
 
     fn new() -> Self {
-        todo!()
+        let table_fields: Vec<TableFields> = vec![];
+        Self {
+            schema: table_fields,
+        }
     }
 }
