@@ -97,13 +97,14 @@ impl DataGeneration<Client> for Postgres {
                                 }
                             }
                             const_types::BYTE => {
-                                values.push(format!("0x{}", generate_bytes(&cd.data_type)));
+                                values.push(format!("'\\x{}'", generate_bytes(&cd.data_type)));
                             }
                             const_types::INT
                             | const_types::SMALLINT
                             | const_types::BIGINT
                             | const_types::DECIMAL
-                            | const_types::DOUBLE => {
+                            | const_types::DOUBLE
+                            | const_types::REAL => {
                                 if int_generator_exists(&config, &cd.name)
                                     && cd.data_type.eq(const_types::INT)
                                 {
@@ -128,7 +129,9 @@ impl DataGeneration<Client> for Postgres {
                                 ));
                             }
                             const_types::BOOLEAN => {
-                                values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
+                                let value = random_number!(i8)(0, 2);
+                                let output = if value == 0{"true"} else {"false"};
+                                values.push(format!("{}", output));
                             }
                             _ => println!("type {} not currently supported", cd.data_type),
                         }

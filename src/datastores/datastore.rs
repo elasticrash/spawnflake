@@ -1,4 +1,3 @@
-use mysql::Conn;
 use crate::configuration::config_model::GenericConfiguration;
 
 pub trait DataGeneration<T> {

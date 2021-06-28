@@ -1,4 +1,4 @@
-use postgres::{Client, Error, NoTls};
+use postgres::{Client, Error};
 
 pub fn insert_record(
     client: &mut Client,
@@ -6,8 +6,18 @@ pub fn insert_record(
     columns: String,
     values: String,
 ) -> Result<i32, Error> {
-    let id = client.query_one(
-        "INSERT INTO $1 ($2) VALUES ($3) RETURNING id",
-        &[&table, &columns, &values])?;
+    let query = format!(
+        "INSERT INTO {} ({}) VALUES ({}) RETURNING id",
+        table, columns, values
+    );
+
+    let id = match client.query_one(
+         &query[..],
+        &[]
+    ){
+        Ok(data) => data,
+        Err(why) => panic!("{}", why),
+    };
+
     Ok(id.get(0))
 }

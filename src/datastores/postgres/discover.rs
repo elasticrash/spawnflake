@@ -1,4 +1,4 @@
-use postgres::{Client, Error, NoTls};
+use postgres::{Client, Error};
 
 use crate::datastores::generic::common_models::{Describe, ForeignKeyRel};
 
@@ -92,18 +92,17 @@ pub fn get_columns(
             field: column_name,
             data_type: data_type,
             null: is_nullable,
-            key: primary_keys
-                .iter()
-                .find(|x| {
-                    let rec: String = row.get(0);
-                    return **x == rec;
-                })
-                .unwrap_or(&"".to_string())
-                .to_string(),
+            key: if primary_keys.iter().any(|x| {
+                let rec: String = row.get(0);
+                return **x == rec;
+            }) {
+                "PRI".to_string()
+            } else {
+                "".to_string()
+            },
             default: None,
             extra: column_default.unwrap_or("null".to_string()),
         });
     }
-
     return Ok(column_names);
 }
