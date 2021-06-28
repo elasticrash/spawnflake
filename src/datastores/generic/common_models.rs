@@ -13,7 +13,6 @@ pub struct TableFields {
     pub rel: Vec<ForeignKeyRel>,
 }
 
-
 #[derive(Debug, Clone)]
 pub struct Describe {
     pub field: String,
@@ -23,3 +22,18 @@ pub struct Describe {
     pub default: Option<String>,
     pub extra: String,
 }
+
+#[derive(Debug, Clone)]
+pub struct CdDt {
+    pub name: String,
+    pub data_type: String,
+    pub fk: bool,
+    pub dep: Option<ForeignKeyRel>,
+}
+
+#[derive(Debug, Clone)]
+pub struct TempKeys {
+    pub id: Vec<i32>,
+    pub table_name: String,
+}
+

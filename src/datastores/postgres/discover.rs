@@ -84,9 +84,9 @@ pub fn get_columns(
         &[&table_name, &schema],
     )? {
         let column_name: String = row.get(0);
-        let data_type: String = row.get(0);
-        let is_nullable: String = row.get(0);
-        let column_default: Option<String> = row.get(0);
+        let data_type: String = row.get(1);
+        let is_nullable: String = row.get(2);
+        let column_default: Option<String> = row.get(3);
 
         column_names.push(Describe {
             field: column_name,

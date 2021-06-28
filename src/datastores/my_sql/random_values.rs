@@ -1,8 +1,9 @@
 use crate::{
-    datastores::generic::const_types::const_types,
     date_generator::datetime::{generate_date, generate_datetime, generate_time},
     random_number,
 };
+
+use super::const_types::const_types;
 
 pub fn generate_date_time(ctype: &str) -> Option<String> {
     if ctype.starts_with(const_types::DATETIME) {
@@ -80,7 +81,7 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::datastores::my_sql::data_types::{generate_date_time, generate_numeric};
+    use crate::datastores::my_sql::random_values::{generate_date_time, generate_numeric};
 
     #[test]
     fn generate_numeric_succesfully() {

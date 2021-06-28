@@ -27,3 +27,53 @@ create table users
 
 alter table users owner to postgres;
 
+create table numeric_types
+(
+	id serial not null
+		constraint numeric_types_pk
+			primary key,
+	smallint_type smallint,
+	bigint_types bigint,
+	decimal_type numeric,
+	real_type real,
+	double_type double precision
+);
+
+alter table numeric_types owner to postgres;
+
+create table date_types
+(
+	id serial not null
+		constraint table_name_pk
+			primary key,
+	timestamp_type timestamp,
+	date_type date,
+	time_type time,
+	interval_type interval
+);
+
+alter table date_types owner to postgres;
+
+create table string_types
+(
+	id serial not null
+		constraint string_types_pk
+			primary key,
+	varchar_type varchar,
+	char_type char,
+	text_type text
+);
+
+alter table string_types owner to postgres;
+
+create table single_types
+(
+	id serial not null
+		constraint single_types_pk
+			primary key,
+	byte_type bytea,
+	boolean_type boolean
+);
+
+alter table single_types owner to postgres;
+

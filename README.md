@@ -26,6 +26,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Mysql   | binary        | ✔️      | ❌       |
 | Mysql   | text        | ✔️      | ❌       |
 | Mysql   | blob        | ✔️      | ❌       |
+* At the moment it only support tables with numberic ids
 
 ## breaking changes
 * 0.2.0 completely refactored, configuration is still the same
