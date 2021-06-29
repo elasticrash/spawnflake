@@ -4,7 +4,7 @@
 pub mod configuration;
 
 /// Database functionality
-pub mod databases;
+pub mod datastores;
 /// generates name based on patterns
 pub mod name_generator;
 

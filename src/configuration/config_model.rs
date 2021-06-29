@@ -4,7 +4,8 @@ use serde::Deserialize;
 #[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct GenericConfiguration {
     pub types: ValueTypes,
-    pub mysql_configuration: MySQLConfiguration,
+    pub mysql_configuration: Option<RelationalDatabaseConfiguration>,
+    pub postgres_configuration: Option<RelationalDatabaseConfiguration>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -20,7 +21,7 @@ pub struct Patterns<T> {
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
-pub struct MySQLConfiguration {
+pub struct RelationalDatabaseConfiguration {
     pub address: String,
     pub port: i32,
     pub user: String,

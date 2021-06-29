@@ -34,7 +34,7 @@ pub fn name_generator_exists(config: &GenericConfiguration, name: &str) -> bool 
 mod tests {
     use crate::{
         configuration::config_model::{
-            GenericConfiguration, MySQLConfiguration, Patterns, ValueTypes,
+            GenericConfiguration, Patterns, RelationalDatabaseConfiguration, ValueTypes,
         },
         name_generator::loader::name_generator_exists,
     };
@@ -46,17 +46,18 @@ mod tests {
                 types: ValueTypes {
                     string: vec![Patterns::<Vec<String>> {
                         name: "test".to_string(),
-                        rules:vec![],
+                        rules: vec![],
                     }],
                     integer: vec![],
                 },
-                mysql_configuration: MySQLConfiguration {
+                mysql_configuration: Some(RelationalDatabaseConfiguration {
                     address: "".to_string(),
                     port: 123,
                     user: "".to_string(),
                     password: "".to_string(),
                     schema: "".to_string(),
-                },
+                }),
+                postgres_configuration: None,
             },
             "test",
         );
@@ -71,17 +72,18 @@ mod tests {
                 types: ValueTypes {
                     string: vec![Patterns::<Vec<String>> {
                         name: "random".to_string(),
-                        rules:vec![],
+                        rules: vec![],
                     }],
                     integer: vec![],
                 },
-                mysql_configuration: MySQLConfiguration {
+                mysql_configuration: Some(RelationalDatabaseConfiguration {
                     address: "".to_string(),
                     port: 123,
                     user: "".to_string(),
                     password: "".to_string(),
                     schema: "".to_string(),
-                },
+                }),
+                postgres_configuration: None,
             },
             "test",
         );

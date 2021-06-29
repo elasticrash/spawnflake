@@ -1,47 +1,9 @@
 use crate::{
-    databases::generic::const_types::const_types,
     date_generator::datetime::{generate_date, generate_datetime, generate_time},
     random_number,
 };
 
-pub fn check_if_numeric(ctype: &str) -> bool {
-    let accepted_values = vec![
-        const_types::INT,
-        const_types::SMALLINT,
-        const_types::TINYINT,
-        const_types::MEDIUMINT,
-        const_types::BIGINT,
-        const_types::DECIMAL,
-        const_types::FLOAT,
-        const_types::DOUBLE,
-    ];
-
-    accepted_values.into_iter().any(|x| ctype.starts_with(x))
-}
-
-pub fn check_if_date_time(ctype: &str) -> bool {
-    let accepted_values = vec![
-        const_types::DATETIME,
-        const_types::DATE,
-        const_types::TIMESTAMP,
-        const_types::TIME,
-        const_types::YEAR,
-    ];
-
-    accepted_values.into_iter().any(|x| ctype.starts_with(x))
-}
-
-pub fn check_if_string(ctype: &str) -> bool {
-    let accepted_values = vec![const_types::VARCHAR, const_types::CHAR, const_types::TEXT];
-
-    accepted_values.into_iter().any(|x| ctype.starts_with(x))
-}
-
-pub fn check_if_binary(ctype: &str) -> bool {
-    let accepted_values = vec![const_types::BINARY, const_types::BLOB];
-
-    accepted_values.into_iter().any(|x| ctype.starts_with(x))
-}
+use super::const_types::const_types;
 
 pub fn generate_date_time(ctype: &str) -> Option<String> {
     if ctype.starts_with(const_types::DATETIME) {
@@ -119,16 +81,34 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::databases::my_sql::data_types::check_if_numeric;
+    use crate::datastores::my_sql::random_values::{generate_date_time, generate_numeric};
 
     #[test]
-    fn check_if_int_is_numeric() {
-        assert_eq!(check_if_numeric("int"), true);
+    fn generate_numeric_succesfully() {
+        assert!(
+            generate_numeric("int")
+                .unwrap()
+                .parse::<i32>()
+                .unwrap_or(-1)
+                > 0
+        );
     }
 
     #[test]
-    fn check_if_bit1_is_numeric() {
+    fn generate_year_succesfully() {
         // bits are not supported yet
-        assert_eq!(check_if_numeric("bit(1)"), false);
+        assert!(
+            generate_date_time("year")
+                .unwrap()
+                .parse::<i32>()
+                .unwrap_or(1)
+                > 1969
+        );
+    }
+
+    #[test]
+    fn generate_time_succesfully() {
+        // bits are not supported yet
+        assert!(generate_date_time("time").unwrap().len() == 8);
     }
 }

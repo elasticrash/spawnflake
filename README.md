@@ -1,40 +1,50 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-carSpawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.1.9):
+Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.0):
 * db support
     - mysql
-    - supports simple foreign key relationships (non unique foreign keys, int)
-* supports random data generator for the following types
-    * varchar (generates max sized string)
-    * int
-    * smallint
-    * tinyint
-    * mediumint
-    * bigint
-    * decimal 
-    * float
-    * double
-    * bit
-    * datetime
-    * time
-    * timestamp
-    * date
-    * year
-    * char
-    * binary
-    * text
-    * blob
-* supports pattern based generated random data (config.json)
-    * varchar
-    * integer
+    - postgres (only tested on public schema)
+* supports the following types and functionality:
 
+| Datastore      | Data type | Random Data Generator | Pattern Based Generator |
+| ----------- | ----------- |----------- | ----------- |
+| Mysql/Postgres+      | varchar       | ✔️      | ✔️       |
+| Mysql/Postgres   | int        | ✔️      | ✔️       |
+| Mysql/Postgres   | smallint        | ✔️      | ❌       |
+| Mysql   | tinyint        | ✔️      | ❌       |
+| Mysql   | mediumint        | ✔️      | ❌       |
+| Mysql/Postgres   | bigint        | ✔️      | ❌       |
+| Mysql/Postgres+   | decimal        | ✔️      | ❌       |
+| Mysql   | float        | ✔️      | ❌       |
+| Mysql/Postgres   | double        | ✔️      | ❌       |
+| Mysql   | bit        | ✔️      | ❌       |
+| Mysql/Postgres   | time        | ✔️      | ❌       |
+| Mysql/Postgres   | timestamp        | ✔️      | ❌       |
+| Mysql/Postgres   | date        | ✔️      | ❌       |
+| Mysql   | year        | ✔️      | ❌       |
+| Mysql/Postgres   | char        | ✔️      | ❌       |
+| Mysql   | binary        | ✔️      | ❌       |
+| Mysql/Postgres   | text        | ✔️      | ❌       |
+| Mysql   | blob        | ✔️      | ❌       |
+| Postgres   | real        | ✔️      | ❌       |
+| Postgres+  | interval        | ✔️      | ❌       |
+| Postgres  | byte        | ✔️      | ❌       |
+| Postgres  | boolean        | ✔️      | ❌       |
+
+* At the moment it only support tables with numberic ids
+
+(+) works but not necessary with expected outcome
 ## breaking changes
-
-* 0.1.1 configuration is not backwards compatible with 0.1.0
+* 0.2.0 was completely refactored, configuration is stays the same
 * 0.1.3 uses the schema from the configuration and does not allow a custom value
 
-## Running the example
+## deprecations
+* 0.1.0 is going to be yanked
 
+## cli 
+under developement
+
+## Running the example
 Running the example requires to run docker-compose inside the test folder. Obviously you need
 * docker
 * an sql client/ or a way to access the mysql cli (so as to see the generated records)
