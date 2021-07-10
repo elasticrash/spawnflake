@@ -1,0 +1,2 @@
+[target.x86-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
