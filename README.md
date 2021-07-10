@@ -42,7 +42,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 * 0.1.0 is going to be yanked
 
 ## cli 
-under developement
+a pre release version is available/ check cli/readme.md for usage
 
 ## Running the example
 Running the example requires to run docker-compose inside the test folder. Obviously you need
