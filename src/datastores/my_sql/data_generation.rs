@@ -227,7 +227,7 @@ impl DataGeneration<Conn> for Mysql {
             })
         }
 
-        self.schema.sort_by(|a, b| b.rel.len().cmp(&a.rel.len()));
+        self.schema.sort_by(|a, b| a.rel.len().cmp(&b.rel.len()));
     }
     fn new() -> Self {
         let table_fields: Vec<TableFields> = vec![];
