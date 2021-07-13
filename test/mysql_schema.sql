@@ -36,6 +36,9 @@ create table numeric_types
 	float_type float null,
 	double_type double null,
 	bit_type bit null
+	unsigned_int_type int unsigned null,
+	unsigned_tinyint_type tinyint unsigned null,
+	unsigned_bigint_type bigint unsigned null
 );
 
 create table if not exists date_types
@@ -58,5 +61,15 @@ create table if not exists string_types
 	text_type text null,
 	blob_type blob null,
 	varchar_type varchar(44) null
+);
+
+create table if not exists no_auto_increment
+(
+	id bigint not null
+		primary key,
+	text longtext null,
+	address_id int null,
+	constraint table_name_address_id_fk
+		foreign key (address_id) references address (id)
 );
 
