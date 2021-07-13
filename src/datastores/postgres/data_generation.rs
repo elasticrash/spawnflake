@@ -1,9 +1,25 @@
 use std::io::{self, Write};
 
-use crate::{byte_generator::bytes::generate_bytes, configuration::config_model::GenericConfiguration, datastores::{datastore::DataGeneration, generic::common_models::{CdDt, TableFields, TempKeys}, postgres::{const_types::const_types, discover, insert, random_values::{generate_date_time, generate_numeric}}}, name_generator::{
+use crate::{
+    byte_generator::bytes::generate_bytes,
+    configuration::config_model::GenericConfiguration,
+    datastores::{
+        datastore::DataGeneration,
+        generic::common_models::{CdDt, TableFields, TempKeys},
+        postgres::{
+            const_types::const_types,
+            discover, insert,
+            random_values::{generate_date_time, generate_numeric},
+        },
+    },
+    name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
-    }, number_generator::number::{generate_int_number, int_generator_exists}, random_number, string_generator::strings::generate_alphas};
+    },
+    number_generator::number::{generate_int_number, int_generator_exists},
+    random_number,
+    string_generator::strings::generate_alphas,
+};
 
 use super::datastore_models::Postgres;
 use postgres::{Client, NoTls};
@@ -66,13 +82,14 @@ impl DataGeneration<Client> for Postgres {
                         name: f.field,
                         data_type: f.data_type,
                         fk: fk_exists,
+                        non_generated: false,
                         dep: dep,
                     };
                 })
                 .collect();
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
-            let mut fk_keys: Vec<i32> = vec![];
+            let mut fk_keys: Vec<i64> = vec![];
             for _i in 0..no_of_record {
                 print!("*");
                 io::stdout().flush();
@@ -130,7 +147,7 @@ impl DataGeneration<Client> for Postgres {
                             }
                             const_types::BOOLEAN => {
                                 let value = random_number!(i8)(0, 2);
-                                let output = if value == 0{"true"} else {"false"};
+                                let output = if value == 0 { "true" } else { "false" };
                                 values.push(format!("{}", output));
                             }
                             _ => println!("type {} not currently supported", cd.data_type),

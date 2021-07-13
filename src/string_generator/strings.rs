@@ -5,7 +5,7 @@ use rand::Rng;
 pub fn generate_alphas(string_type: &str) -> String {
     let chars = "abcdefghijklmnopqrstuvwxyz";
 
-    if string_type.eq("text") {
+    if string_type.eq("text") || string_type.eq("longtext") {
         let mut result = "".to_string();
         for _i in 0..255 {
             let rng = rand::thread_rng().gen_range(0..25);

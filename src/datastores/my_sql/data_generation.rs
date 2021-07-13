@@ -11,7 +11,7 @@ use crate::{
         my_sql::{
             const_types::const_types,
             discover, insert,
-            random_values::{generate_date_time, generate_numeric},
+            random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
     name_generator::{
@@ -72,7 +72,7 @@ impl DataGeneration<Conn> for Mysql {
                 .clone()
                 .fields
                 .into_iter()
-                .filter(|a| a.key != "PRI")
+                .filter(|a| (!(a.key == "PRI" && a.extra == "auto_increment") || a.extra != ""))
                 .map(|f| {
                     let fk_exists = table
                         .clone()
@@ -86,17 +86,24 @@ impl DataGeneration<Conn> for Mysql {
                         .into_iter()
                         .find(|r| r.column_name == f.field);
 
+                    let ng = table
+                        .clone()
+                        .fields
+                        .into_iter()
+                        .any(|r| r.key == "PRI" && r.extra == "");
+
                     return CdDt {
                         name: f.field,
                         data_type: f.data_type,
                         fk: fk_exists,
+                        non_generated: ng,
                         dep: dep,
                     };
                 })
                 .collect();
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
-            let mut fk_keys: Vec<i32> = vec![];
+            let mut fk_keys: Vec<i64> = vec![];
             for _i in 0..no_of_record {
                 print!("*");
                 io::stdout().flush();
@@ -104,11 +111,14 @@ impl DataGeneration<Conn> for Mysql {
                 let mut values: Vec<String> = vec![];
                 let mut fk_table_data;
                 for cd in &columns {
-                    if cd.clone().fk == false {
+                    if cd.clone().fk == false || cd.non_generated == true {
                         let end_bytes = cd.data_type.find("(").unwrap_or(cd.data_type.len());
 
                         match &cd.data_type[0..end_bytes] {
-                            const_types::VARCHAR | const_types::CHAR | const_types::TEXT => {
+                            const_types::VARCHAR
+                            | const_types::CHAR
+                            | const_types::TEXT
+                            | const_types::LONG_TEXT => {
                                 if name_generator_exists(&config, &cd.name)
                                     && cd.data_type.contains(const_types::VARCHAR)
                                 {
@@ -124,10 +134,13 @@ impl DataGeneration<Conn> for Mysql {
                                 values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                             }
                             const_types::INT
+                            | const_types::UNSIGNED_INT
                             | const_types::SMALLINT
                             | const_types::TINYINT
+                            | const_types::UNSINGED_TINYINT
                             | const_types::MEDIUMINT
                             | const_types::BIGINT
+                            | const_types::UNSINGED_BIGINT
                             | const_types::DECIMAL
                             | const_types::FLOAT
                             | const_types::DOUBLE => {
@@ -158,6 +171,9 @@ impl DataGeneration<Conn> for Mysql {
                             const_types::BIT => {
                                 values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
                             }
+                            const_types::ENUM => {
+                                values.push(format!("{}", select_enum(&cd.data_type).unwrap()));
+                            }
                             _ => println!("type {} not currently supported", cd.data_type),
                         }
                     } else {
@@ -167,7 +183,7 @@ impl DataGeneration<Conn> for Mysql {
                             .into_iter()
                             .find(|f| f.table_name == fk_table)
                             .unwrap();
-                        let fk_index = random_number!(i32)(0, fk_table_data.id.len() as i32);
+                        let fk_index = random_number!(i64)(0, fk_table_data.id.len() as i64);
                         values.push(format!(
                             "'{}'",
                             fk_table_data.id.get(fk_index as usize).unwrap()
@@ -210,6 +226,8 @@ impl DataGeneration<Conn> for Mysql {
                 rel: get_foreign_keys.unwrap_or(vec![]),
             })
         }
+
+        self.schema.sort_by(|a, b| b.rel.len().cmp(&a.rel.len()));
     }
     fn new() -> Self {
         let table_fields: Vec<TableFields> = vec![];

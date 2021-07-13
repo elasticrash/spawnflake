@@ -5,16 +5,13 @@ pub fn insert_record(
     table: String,
     columns: String,
     values: String,
-) -> Result<i32, Error> {
+) -> Result<i64, Error> {
     let query = format!(
         "INSERT INTO {} ({}) VALUES ({}) RETURNING id",
         table, columns, values
     );
 
-    let id = match client.query_one(
-         &query[..],
-        &[]
-    ){
+    let id = match client.query_one(&query[..], &[]) {
         Ok(data) => data,
         Err(why) => panic!("{}", why),
     };

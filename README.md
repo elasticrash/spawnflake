@@ -1,6 +1,6 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.0):
+Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.1):
 * db support
     - mysql
     - postgres (only tested on public schema)
@@ -10,10 +10,12 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | ----------- | ----------- |----------- | ----------- |
 | Mysql/Postgres+      | varchar       | ✔️      | ✔️       |
 | Mysql/Postgres   | int        | ✔️      | ✔️       |
+| Mysql   | unsigned int        | ✔️      | ❌       |
 | Mysql/Postgres   | smallint        | ✔️      | ❌       |
-| Mysql   | tinyint        | ✔️      | ❌       |
+| Mysql   | tinyint/unsigned tinyint        | ✔️      | ❌       |
 | Mysql   | mediumint        | ✔️      | ❌       |
-| Mysql/Postgres   | bigint        | ✔️      | ❌       |
+| Mysql/Postgres   | bigint       | ✔️      | ❌       |
+| Mysql   | unsigned bigint        | ✔️      | ❌       |
 | Mysql/Postgres+   | decimal        | ✔️      | ❌       |
 | Mysql   | float        | ✔️      | ❌       |
 | Mysql/Postgres   | double        | ✔️      | ❌       |
@@ -25,7 +27,9 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Mysql/Postgres   | char        | ✔️      | ❌       |
 | Mysql   | binary        | ✔️      | ❌       |
 | Mysql/Postgres   | text        | ✔️      | ❌       |
+| Mysql   | longtext        | ✔️      | ❌       |
 | Mysql   | blob        | ✔️      | ❌       |
+| Mysql   | enum        | ❌      | ✔️       |
 | Postgres   | real        | ✔️      | ❌       |
 | Postgres+  | interval        | ✔️      | ❌       |
 | Postgres  | byte        | ✔️      | ❌       |
@@ -48,7 +52,7 @@ a pre release version is available/ check cli/readme.md for usage
 Running the example requires to run docker-compose inside the test folder. Obviously you need
 * docker
 * an sql client/ or a way to access the mysql cli (so as to see the generated records)
-* cargo run --example generate
+* cargo run --example generate_mysql
 
 ## Contributing
 
