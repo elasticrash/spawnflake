@@ -34,6 +34,6 @@ pub struct CdDt {
 
 #[derive(Debug, Clone)]
 pub struct TempKeys {
-    pub id: Vec<i64>,
+    pub id: Vec<String>,
     pub table_name: String,
 }

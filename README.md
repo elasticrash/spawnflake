@@ -5,6 +5,8 @@ Spawnflake generates random data and/or based on patterns for relational databas
 ## whats new (v0.2.1)
 * The libray now builds a depedency tree of the foreign keys so it will know in which order it needs to generate the tables (mysql only, experimental) 
 * Supports more types 
+* Support more keytypes and composite keys in most cases
+* Detects cyclic depedencies (but cannot handle it yet)
 * Supports column names with reserve names
 ## support 
 * db support
@@ -42,9 +44,8 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Postgres  | byte        | ✔️      | ❌       |
 | Postgres  | boolean        | ✔️      | ❌       |
 
-* At the moment it only support tables with numberic ids
-
 (+) works but not necessary with expected outcome
+
 ## breaking changes
 * 0.2.0 was completely refactored, configuration is stays the same
 

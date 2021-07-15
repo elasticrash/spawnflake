@@ -1,4 +1,7 @@
-use std::io::{self, Write};
+use std::{
+    collections::VecDeque,
+    io::{self, Write},
+};
 
 use crate::{
     byte_generator::bytes::generate_bytes,
@@ -89,7 +92,7 @@ impl DataGeneration<Client> for Postgres {
                 .collect();
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
-            let mut fk_keys: Vec<i64> = vec![];
+            let mut fk_keys: Vec<String> = vec![];
             for _i in 0..no_of_record {
                 print!("*");
                 io::stdout().flush();
@@ -179,7 +182,7 @@ impl DataGeneration<Client> for Postgres {
                     values.join(","),
                 );
 
-                fk_keys.push(key.unwrap());
+                fk_keys.push(key.unwrap().to_string());
             }
 
             temp_keys.push(TempKeys {
@@ -209,5 +212,13 @@ impl DataGeneration<Client> for Postgres {
         Self {
             schema: table_fields,
         }
+    }
+
+    fn build_depedency_tree(
+        &mut self,
+        safe_tf: &mut VecDeque<TableFields>,
+        unsafe_tf: &mut VecDeque<TableFields>,
+    ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
+        todo!()
     }
 }
