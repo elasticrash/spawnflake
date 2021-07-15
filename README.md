@@ -3,7 +3,7 @@
 Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages.
 
 ## whats new (v0.2.1)
-* The libray now builds a depedency tree of the foreign keys so it will know in which order it needs to generate the tables (mysql only)
+* The libray now builds a depedency tree of the foreign keys so it will know in which order it needs to generate the tables (mysql only, experimental) 
 * Supports more types 
 * Supports column names with reserve names
 ## support 

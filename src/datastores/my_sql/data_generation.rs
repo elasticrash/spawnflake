@@ -96,7 +96,7 @@ impl DataGeneration<Conn> for Mysql {
                         .clone()
                         .fields
                         .into_iter()
-                        .any(|r| r.key == "PRI" && r.extra == "");
+                        .any(|r| r.key == "PRI" && r.extra == "" && r.field == f.field);
 
                     return CdDt {
                         name: f.field,
