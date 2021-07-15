@@ -1314,9 +1314,9 @@ dependencies = [
 
 [[package]]
 name = "spawnflake"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3c10a1e4daa0eebb52ebf7b45bfbd0134f5547da228e701e66a7c0c5cc4145f"
+checksum = "1270326e7501ecb3c167635dfc779227a21c0e4c0935ab99147494f43ac98d95"
 dependencies = [
  "mysql",
  "postgres",
@@ -1327,7 +1327,7 @@ dependencies = [
 
 [[package]]
 name = "spawnflakes"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "clap",
  "spawnflake",
