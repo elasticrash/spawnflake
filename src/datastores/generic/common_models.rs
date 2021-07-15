@@ -28,12 +28,12 @@ pub struct CdDt {
     pub name: String,
     pub data_type: String,
     pub fk: bool,
+    pub non_generated: bool,
     pub dep: Option<ForeignKeyRel>,
 }
 
 #[derive(Debug, Clone)]
 pub struct TempKeys {
-    pub id: Vec<i32>,
+    pub id: Vec<String>,
     pub table_name: String,
 }
-

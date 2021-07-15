@@ -11,13 +11,9 @@ pub fn insert_record(
         table, columns, values
     );
 
-    let id = match client.query_one(
-         &query[..],
-        &[]
-    ){
+    let id = match client.query_one(&query[..], &[]) {
         Ok(data) => data,
         Err(why) => panic!("{}", why),
     };
-
     Ok(id.get(0))
 }

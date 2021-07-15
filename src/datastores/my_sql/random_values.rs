@@ -24,15 +24,23 @@ pub fn generate_date_time(ctype: &str) -> Option<String> {
 pub fn generate_numeric(ctype: &str) -> Option<String> {
     if ctype.starts_with(const_types::TINYINT) {
         Some(random_number!(i8)(0, i8::MAX).to_string())
+    } else if ctype.starts_with(const_types::UNSINGED_TINYINT) {
+        Some(random_number!(i8)(0, i8::MAX).to_string())
     } else if ctype.starts_with(const_types::SMALLINT) {
         Some(random_number!(i16)(0, i16::MAX).to_string())
+    } else if ctype.starts_with(const_types::UNSINGED_SMALLINT) {
+        Some(random_number!(u16)(u16::MIN, u16::MAX).to_string())
     } else if ctype.starts_with(const_types::MEDIUMINT) {
         Some(random_number!(i32)(0, 8388607).to_string())
     } else if ctype.starts_with(const_types::INT) {
         Some(random_number!(i32)(0, i32::MAX).to_string())
+    } else if ctype.starts_with(const_types::UNSIGNED_INT) {
+        Some(random_number!(u32)(u32::MIN, u32::MAX).to_string())
     } else if ctype.starts_with(const_types::BIGINT) {
-        Some(random_number!(i128)(0, 2_i128.pow(63) - 1).to_string())
-    } else if ctype.starts_with(const_types::DECIMAL) {
+        Some(random_number!(i64)(0, 2_i64.pow(31) - 1).to_string())
+    } else if ctype.starts_with(const_types::UNSINGED_BIGINT) {
+        Some(random_number!(i64)(0, 2_i64.pow(31) - 1).to_string())
+    } else if ctype.starts_with(const_types::DECIMAL) || ctype.starts_with(const_types::DOUBLE) {
         let start_bytes = ctype.find("(").unwrap_or(0);
         let end_bytes = ctype.find(")").unwrap_or(ctype.len());
 
@@ -55,13 +63,13 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
                 return Some(format!(
                     "{}.{}", //TODO: prefix zeros
-                    random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string(),
-                    random_number!(i128)(0, num_b.parse::<i128>().unwrap_or(1)).to_string(),
+                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1)).to_string(),
+                    random_number!(i64)(0, num_b.parse::<i64>().unwrap_or(1)).to_string(),
                 ));
             } else {
                 return Some(format!(
                     "{}",
-                    random_number!(i128)(0, num_a.parse::<i128>().unwrap_or(1)).to_string()
+                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1)).to_string()
                 ));
             }
         }
@@ -72,11 +80,19 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
         ));
     } else if ctype.starts_with(const_types::FLOAT) {
         Some(random_number!(f32)(0., f32::MAX).to_string())
-    } else if ctype.starts_with(const_types::DOUBLE) {
-        Some(random_number!(f32)(0., f32::MAX).to_string())
     } else {
         None
     }
+}
+
+pub fn select_enum(ctype: &str) -> Option<String> {
+    let start_bytes = ctype.find("(").unwrap_or(0);
+    let end_bytes = ctype.find(")").unwrap_or(ctype.len());
+
+    let enum_collection = &ctype[(start_bytes + 1)..end_bytes];
+    let enum_values: Vec<&str> = enum_collection.split(",").collect();
+    let enum_index = random_number!(usize)(0, enum_values.len());
+    Some(enum_values[enum_index].to_string())
 }
 
 #[cfg(test)]

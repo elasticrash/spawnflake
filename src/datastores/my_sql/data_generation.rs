@@ -1,4 +1,9 @@
-use std::io::{self, Write};
+use core::panic;
+use std::{
+    collections::VecDeque,
+    io::{self, Write},
+    usize,
+};
 
 use mysql::{Conn, Opts};
 
@@ -10,8 +15,9 @@ use crate::{
         generic::common_models::{CdDt, TableFields, TempKeys},
         my_sql::{
             const_types::const_types,
-            discover, insert,
-            random_values::{generate_date_time, generate_numeric},
+            discover,
+            insert::{self, has_data},
+            random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
     name_generator::{
@@ -72,7 +78,7 @@ impl DataGeneration<Conn> for Mysql {
                 .clone()
                 .fields
                 .into_iter()
-                .filter(|a| a.key != "PRI")
+                .filter(|a| a.extra == "")
                 .map(|f| {
                     let fk_exists = table
                         .clone()
@@ -86,17 +92,24 @@ impl DataGeneration<Conn> for Mysql {
                         .into_iter()
                         .find(|r| r.column_name == f.field);
 
+                    let ng = table
+                        .clone()
+                        .fields
+                        .into_iter()
+                        .any(|r| r.key == "PRI" && r.extra == "" && r.field == f.field);
+
                     return CdDt {
                         name: f.field,
                         data_type: f.data_type,
                         fk: fk_exists,
+                        non_generated: ng,
                         dep: dep,
                     };
                 })
                 .collect();
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
-            let mut fk_keys: Vec<i32> = vec![];
+            let mut fk_keys: Vec<String> = vec![];
             for _i in 0..no_of_record {
                 print!("*");
                 io::stdout().flush();
@@ -104,12 +117,24 @@ impl DataGeneration<Conn> for Mysql {
                 let mut values: Vec<String> = vec![];
                 let mut fk_table_data;
                 for cd in &columns {
-                    if cd.clone().fk == false {
+                    if cd.clone().fk == false || cd.non_generated == true {
                         let end_bytes = cd.data_type.find("(").unwrap_or(cd.data_type.len());
 
                         match &cd.data_type[0..end_bytes] {
-                            const_types::VARCHAR | const_types::CHAR | const_types::TEXT => {
-                                if name_generator_exists(&config, &cd.name)
+                            const_types::VARCHAR
+                            | const_types::CHAR
+                            | const_types::TEXT
+                            | const_types::LONG_TEXT
+                            | const_types::MEDIUM_TEXT => {
+                                if cd.non_generated {
+                                    let next_id =
+                                        (has_data(&mut connection, table.table_name.to_owned())
+                                            + 1)
+                                        .to_string();
+                                    values.push(format!("'{}'", next_id));
+
+                                    fk_keys.push(next_id);
+                                } else if name_generator_exists(&config, &cd.name)
                                     && cd.data_type.contains(const_types::VARCHAR)
                                 {
                                     values.push(format!(
@@ -120,18 +145,33 @@ impl DataGeneration<Conn> for Mysql {
                                     values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                                 }
                             }
-                            const_types::BINARY | const_types::BLOB => {
+                            const_types::BINARY
+                            | const_types::VARBINARY
+                            | const_types::BLOB
+                            | const_types::LONG_BLOB => {
                                 values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                             }
                             const_types::INT
+                            | const_types::UNSIGNED_INT
                             | const_types::SMALLINT
+                            | const_types::UNSINGED_SMALLINT
                             | const_types::TINYINT
+                            | const_types::UNSINGED_TINYINT
                             | const_types::MEDIUMINT
                             | const_types::BIGINT
+                            | const_types::UNSINGED_BIGINT
                             | const_types::DECIMAL
                             | const_types::FLOAT
                             | const_types::DOUBLE => {
-                                if int_generator_exists(&config, &cd.name)
+                                if cd.non_generated {
+                                    let next_id =
+                                        (has_data(&mut connection, table.table_name.to_owned())
+                                            + 1)
+                                        .to_string();
+                                    values.push(format!("'{}'", next_id));
+
+                                    fk_keys.push(next_id);
+                                } else if int_generator_exists(&config, &cd.name)
                                     && cd.data_type.eq(const_types::INT)
                                 {
                                     values.push(format!(
@@ -158,6 +198,9 @@ impl DataGeneration<Conn> for Mysql {
                             const_types::BIT => {
                                 values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
                             }
+                            const_types::ENUM => {
+                                values.push(format!("{}", select_enum(&cd.data_type).unwrap()));
+                            }
                             _ => println!("type {} not currently supported", cd.data_type),
                         }
                     } else {
@@ -167,7 +210,7 @@ impl DataGeneration<Conn> for Mysql {
                             .into_iter()
                             .find(|f| f.table_name == fk_table)
                             .unwrap();
-                        let fk_index = random_number!(i32)(0, fk_table_data.id.len() as i32);
+                        let fk_index = random_number!(i64)(0, fk_table_data.id.len() as i64);
                         values.push(format!(
                             "'{}'",
                             fk_table_data.id.get(fk_index as usize).unwrap()
@@ -178,18 +221,25 @@ impl DataGeneration<Conn> for Mysql {
                 let _r = insert::insert_record(
                     &mut connection,
                     table.table_name.to_owned(),
-                    columns // TODO: change this to supported types only
+                    columns
                         .clone()
                         .into_iter()
-                        .map(|f| f.name)
+                        .map(|f| format!("`{}`", f.name))
                         .collect::<Vec<String>>()
                         .join(","),
                     values.join(","),
                 );
-
-                let key = insert::last_id(&mut connection);
-                fk_keys.push(key);
+                if !(columns.clone().into_iter().any(|f| f.non_generated == true)) {
+                    let key = insert::last_id(&mut connection).to_string();
+                    fk_keys.push(key);
+                }
             }
+
+            println!(
+                "table {} has {} records",
+                table.table_name,
+                has_data(&mut connection, table.table_name.to_owned())
+            );
 
             temp_keys.push(TempKeys {
                 id: fk_keys,
@@ -210,6 +260,82 @@ impl DataGeneration<Conn> for Mysql {
                 rel: get_foreign_keys.unwrap_or(vec![]),
             })
         }
+
+        self.schema.sort_by(|a, b| a.rel.len().cmp(&b.rel.len()));
+
+        let mut safe_tree: VecDeque<TableFields> = VecDeque::new();
+        let mut unsafe_left: usize = 0;
+        loop {
+            let mut unsafe_tree: VecDeque<TableFields> = VecDeque::new();
+
+            let (safe_tree, unsafe_tree) =
+                self.build_depedency_tree(&mut safe_tree, &mut unsafe_tree);
+
+            if unsafe_tree.len() == 0 {
+                break;
+            }
+
+            if unsafe_tree.len() == unsafe_left {
+                println!("cyclic depedency detected, exluding the following tables");
+
+                unsafe_tree
+                    .clone()
+                    .into_iter()
+                    .for_each(|a| println!("{:#?}", &a.table_name));
+                break;
+            }
+
+            unsafe_left = unsafe_tree.len();
+        }
+
+        self.schema = safe_tree.into_iter().collect();
+    }
+
+    fn build_depedency_tree(
+        &mut self,
+        safe_tree: &mut VecDeque<TableFields>,
+        unsafe_tree: &mut VecDeque<TableFields>,
+    ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
+        for (i, tf) in self.schema.clone().into_iter().enumerate() {
+            let exists = safe_tree
+                .into_iter()
+                .any(|safe_tf| safe_tf.table_name == tf.table_name);
+
+            if exists {
+                continue;
+            }
+
+            let number_of_foreign_keys = tf.clone().rel.into_iter().fold(0, |acc, x| {
+                if x.table_name == tf.table_name {
+                    acc + 1
+                } else {
+                    acc
+                }
+            });
+
+            if tf.rel.len() == 0 || number_of_foreign_keys == 0 {
+                safe_tree.push_front(tf);
+            } else {
+                let occurance: i32 = tf.clone().rel.into_iter().fold(0, |acc, x| {
+                    if safe_tree
+                        .clone()
+                        .into_iter()
+                        .any(|b| b.table_name == x.referenced_table_name)
+                    {
+                        acc + 1
+                    } else {
+                        acc
+                    }
+                });
+
+                if occurance == number_of_foreign_keys {
+                    safe_tree.push_back(tf.clone());
+                } else {
+                    unsafe_tree.push_front(tf.clone());
+                }
+            }
+        }
+        (safe_tree.clone(), unsafe_tree.clone())
     }
     fn new() -> Self {
         let table_fields: Vec<TableFields> = vec![];

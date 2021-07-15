@@ -7,7 +7,10 @@ use crate::{
 
 pub fn generate_bytes(binary_type: &str) -> String {
     let mut result = "".to_string();
-    if binary_type.starts_with(sqlt::BINARY) || binary_type.starts_with(psqlt::BYTE) {
+    if binary_type.starts_with(sqlt::BINARY)
+        || binary_type.starts_with(sqlt::VARBINARY)
+        || binary_type.starts_with(psqlt::BYTE)
+    {
         let start_bytes = binary_type.find("(").unwrap_or(0);
         let end_bytes = binary_type.find(")").unwrap_or(binary_type.len());
         let v_size = &binary_type[(start_bytes + 1)..end_bytes];
@@ -18,7 +21,7 @@ pub fn generate_bytes(binary_type: &str) -> String {
                 result = format!("0{}", result);
             }
         }
-    } else if binary_type.eq(sqlt::BLOB) {
+    } else if binary_type.eq(sqlt::BLOB) || binary_type.eq(sqlt::LONG_BLOB) {
         for _i in 0..50 {
             result = format!("{}{:X}", result, random_number!(i32)(0, 16));
             if result.len() % 2 != 0 {

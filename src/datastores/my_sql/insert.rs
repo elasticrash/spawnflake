@@ -8,16 +8,25 @@ pub fn insert_record(
     values: String,
 ) -> Result<(), Error> {
     conn.exec_drop(
-        format!("INSERT INTO {} ({}) VALUES ({})", table, columns, values),
+        format!("INSERT INTO {} ({}) VALUES ({})", &table, &columns, &values),
         (),
     )?;
 
     Ok(())
 }
 
-pub fn last_id(conn: &mut Conn) -> i32 {
-    let id: Result<Vec<i32>, Error> =
+pub fn last_id(conn: &mut Conn) -> i64 {
+    let id: Result<Vec<i64>, Error> =
         conn.query_map("SELECT LAST_INSERT_ID()".to_string(), |id| id);
 
     *id.unwrap().first().unwrap()
+}
+
+pub fn has_data(conn: &mut Conn, table: String) -> i64 {
+    let count: Result<Vec<i64>, Error> = conn.query_map(
+        format!("SELECT COUNT(1) as c FROM {}", table).to_string(),
+        |c| c,
+    );
+
+    *count.unwrap().first().unwrap()
 }
