@@ -5,7 +5,7 @@ pub fn insert_record(
     table: String,
     columns: String,
     values: String,
-) -> Result<i64, Error> {
+) -> Result<i32, Error> {
     let query = format!(
         "INSERT INTO {} ({}) VALUES ({}) RETURNING id",
         table, columns, values
@@ -15,6 +15,5 @@ pub fn insert_record(
         Ok(data) => data,
         Err(why) => panic!("{}", why),
     };
-
     Ok(id.get(0))
 }

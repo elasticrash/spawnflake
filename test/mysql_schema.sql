@@ -35,7 +35,7 @@ create table numeric_types
 	demical_2_type decimal(10,5) null,
 	float_type float null,
 	double_type double null,
-	bit_type bit null
+	bit_type bit null,
 	unsigned_int_type int unsigned null,
 	unsigned_tinyint_type tinyint unsigned null,
 	unsigned_bigint_type bigint unsigned null

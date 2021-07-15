@@ -181,7 +181,7 @@ impl DataGeneration<Client> for Postgres {
                         .join(","),
                     values.join(","),
                 );
-
+                
                 fk_keys.push(key.unwrap().to_string());
             }
 
