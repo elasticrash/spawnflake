@@ -1,11 +1,16 @@
 use rand::Rng;
 
+use crate::datastores::my_sql::const_types::const_types;
+
 /// generates random alpha characters (latin)
 /// character pool: abcdefghijklmnopqrstuvwxyz
 pub fn generate_alphas(string_type: &str) -> String {
     let chars = "abcdefghijklmnopqrstuvwxyz";
 
-    if string_type.eq("text") || string_type.eq("longtext") {
+    if string_type.eq(const_types::TEXT)
+        || string_type.eq(const_types::LONG_TEXT)
+        || string_type.eq(const_types::MEDIUM_TEXT)
+    {
         let mut result = "".to_string();
         for _i in 0..255 {
             let rng = rand::thread_rng().gen_range(0..25);

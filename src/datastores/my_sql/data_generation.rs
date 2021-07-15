@@ -1,4 +1,9 @@
-use std::io::{self, Write};
+use core::panic;
+use std::{
+    collections::VecDeque,
+    io::{self, Write},
+    usize,
+};
 
 use mysql::{Conn, Opts};
 
@@ -10,7 +15,8 @@ use crate::{
         generic::common_models::{CdDt, TableFields, TempKeys},
         my_sql::{
             const_types::const_types,
-            discover, insert,
+            discover,
+            insert::{self, has_data},
             random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
@@ -72,7 +78,7 @@ impl DataGeneration<Conn> for Mysql {
                 .clone()
                 .fields
                 .into_iter()
-                .filter(|a| (!(a.key == "PRI" && a.extra == "auto_increment") || a.extra != ""))
+                .filter(|a| a.extra == "")
                 .map(|f| {
                     let fk_exists = table
                         .clone()
@@ -118,7 +124,8 @@ impl DataGeneration<Conn> for Mysql {
                             const_types::VARCHAR
                             | const_types::CHAR
                             | const_types::TEXT
-                            | const_types::LONG_TEXT => {
+                            | const_types::LONG_TEXT
+                            | const_types::MEDIUM_TEXT => {
                                 if name_generator_exists(&config, &cd.name)
                                     && cd.data_type.contains(const_types::VARCHAR)
                                 {
@@ -130,12 +137,16 @@ impl DataGeneration<Conn> for Mysql {
                                     values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                                 }
                             }
-                            const_types::BINARY | const_types::BLOB => {
+                            const_types::BINARY
+                            | const_types::VARBINARY
+                            | const_types::BLOB
+                            | const_types::LONG_BLOB => {
                                 values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                             }
                             const_types::INT
                             | const_types::UNSIGNED_INT
                             | const_types::SMALLINT
+                            | const_types::UNSINGED_SMALLINT
                             | const_types::TINYINT
                             | const_types::UNSINGED_TINYINT
                             | const_types::MEDIUMINT
@@ -151,6 +162,12 @@ impl DataGeneration<Conn> for Mysql {
                                         "'{}'",
                                         generate_int_number(&config, &cd.name).to_string()
                                     ));
+                                } else if cd.non_generated {
+                                    let next_id =
+                                        has_data(&mut connection, table.table_name.to_owned()) + 1;
+                                    values.push(format!("'{}'", next_id));
+
+                                    fk_keys.push(next_id);
                                 } else {
                                     values.push(format!(
                                         "'{}'",
@@ -194,18 +211,25 @@ impl DataGeneration<Conn> for Mysql {
                 let _r = insert::insert_record(
                     &mut connection,
                     table.table_name.to_owned(),
-                    columns // TODO: change this to supported types only
+                    columns
                         .clone()
                         .into_iter()
-                        .map(|f| f.name)
+                        .map(|f| format!("`{}`", f.name))
                         .collect::<Vec<String>>()
                         .join(","),
                     values.join(","),
                 );
-
-                let key = insert::last_id(&mut connection);
-                fk_keys.push(key);
+                if !(columns.clone().into_iter().any(|f| f.non_generated == true)) {
+                    let key = insert::last_id(&mut connection);
+                    fk_keys.push(key);
+                }
             }
+
+            println!(
+                "table {} has {} records",
+                table.table_name,
+                has_data(&mut connection, table.table_name.to_owned())
+            );
 
             temp_keys.push(TempKeys {
                 id: fk_keys,
@@ -228,6 +252,46 @@ impl DataGeneration<Conn> for Mysql {
         }
 
         self.schema.sort_by(|a, b| a.rel.len().cmp(&b.rel.len()));
+
+        let mut tree: VecDeque<TableFields> = VecDeque::new();
+        let mut current = 0;
+        for (i, tf) in self.schema.clone().into_iter().enumerate() {
+            let number_of_foreign_keys = tf.clone().rel.into_iter().fold(0, |acc, x| {
+                if x.table_name == tf.table_name {
+                    acc + 1
+                } else {
+                    acc
+                }
+            });
+
+            if tf.rel.len() == 0 || number_of_foreign_keys == 0 {
+                tree.push_front(tf);
+                current += 1;
+            } else {
+                let occurance: i32 = tf.clone().rel.into_iter().fold(0, |acc, x| {
+                    if tree
+                        .clone()
+                        .into_iter()
+                        .any(|b| b.table_name == x.referenced_table_name)
+                    {
+                        acc + 1
+                    } else {
+                        acc
+                    }
+                });
+
+                tree.push_back(tf.clone());
+
+                let tree_size = tree.clone().len();
+
+                if !(occurance == tf.rel.len() as i32) {
+                    tree.swap(current, tree_size - 1);
+                }
+            }
+        }
+        self.schema = tree.into_iter().collect();
+
+        println!("{}", self);
     }
     fn new() -> Self {
         let table_fields: Vec<TableFields> = vec![];

@@ -1,6 +1,12 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages. These are the supported features so far (0.2.1):
+Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages.
+
+## whats new (v0.2.1)
+* The libray now builds a depedency tree of the foreign keys so it will know in which order it needs to generate the tables (mysql only)
+* Supports more types 
+* Supports column names with reserve names
+## support 
 * db support
     - mysql
     - postgres (only tested on public schema)
@@ -12,6 +18,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Mysql/Postgres   | int        | ✔️      | ✔️       |
 | Mysql   | unsigned int        | ✔️      | ❌       |
 | Mysql/Postgres   | smallint        | ✔️      | ❌       |
+| Mysql   | unsigned smallint        | ✔️      | ❌       |
 | Mysql   | tinyint/unsigned tinyint        | ✔️      | ❌       |
 | Mysql   | mediumint        | ✔️      | ❌       |
 | Mysql/Postgres   | bigint       | ✔️      | ❌       |
@@ -28,10 +35,10 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Mysql   | binary        | ✔️      | ❌       |
 | Mysql/Postgres   | text        | ✔️      | ❌       |
 | Mysql   | longtext        | ✔️      | ❌       |
-| Mysql   | blob        | ✔️      | ❌       |
+| Mysql   | blob/longblob        | ✔️      | ❌       |
 | Mysql   | enum        | ❌      | ✔️       |
 | Postgres   | real        | ✔️      | ❌       |
-| Postgres+  | interval        | ✔️      | ❌       |
+| Postgres  | interval        | ✔️      | ❌       |
 | Postgres  | byte        | ✔️      | ❌       |
 | Postgres  | boolean        | ✔️      | ❌       |
 
@@ -40,10 +47,9 @@ Spawnflake generates random data and/or based on patterns for relational databas
 (+) works but not necessary with expected outcome
 ## breaking changes
 * 0.2.0 was completely refactored, configuration is stays the same
-* 0.1.3 uses the schema from the configuration and does not allow a custom value
 
 ## deprecations
-* 0.1.0 is going to be yanked
+* 0.1.0 to 0.1.3 is going to be yanked
 
 ## cli 
 a pre release version is available/ check cli/readme.md for usage
