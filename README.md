@@ -11,7 +11,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 ## support 
 * db support
     - mysql
-    - postgres (only tested on public schema)
+    - postgres (minimal support and only on public schema)
 * supports the following types and functionality:
 
 | Datastore      | Data type | Random Data Generator | Pattern Based Generator |
