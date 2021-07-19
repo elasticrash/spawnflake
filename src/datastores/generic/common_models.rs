@@ -14,6 +14,13 @@ pub struct TableFields {
 }
 
 #[derive(Debug, Clone)]
+pub struct NullableForeignKeys {
+    pub column_name: String,
+    pub nullable: bool,
+    pub safe: bool,
+}
+
+#[derive(Debug, Clone)]
 pub struct Describe {
     pub field: String,
     pub data_type: String,
@@ -30,6 +37,7 @@ pub struct CdDt {
     pub fk: bool,
     pub non_generated: bool,
     pub dep: Option<ForeignKeyRel>,
+    pub nullable: bool,
 }
 
 #[derive(Debug, Clone)]
