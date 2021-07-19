@@ -12,7 +12,7 @@ use crate::{
     configuration::config_model::GenericConfiguration,
     datastores::{
         datastore::DataGeneration,
-        generic::common_models::{CdDt, ForeignKeyRel, NullableForeignKeys, TableFields, TempKeys},
+        generic::common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
         my_sql::{
             const_types::const_types,
             discover,
@@ -342,7 +342,7 @@ impl DataGeneration<Conn> for Mysql {
                             .fields
                             .clone()
                             .into_iter()
-                            .find(|f| f.field == x.column_name)
+                            .find(|f| f.field == x.referenced_column_name)
                             .unwrap();
 
                         let safe = safe_tree
