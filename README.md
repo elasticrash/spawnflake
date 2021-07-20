@@ -5,6 +5,10 @@ Spawnflake generates random data and/or based on patterns for relational databas
 ## whats new (v0.2.2)
 * Handles cyclic depedencies where nulls are allowed and inserts NULL values
 
+## known limitations
+*  In the cases of handling cyclic depedencies I am not currently updating the keys retrospectively. This is planned for a future version
+* if a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+
 ## support 
 * db support
     - mysql
