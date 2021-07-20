@@ -272,6 +272,8 @@ impl DataGeneration<Conn> for Mysql {
         let mut safe_tree: VecDeque<TableFields> = VecDeque::new();
         let mut unsafe_left: usize = 0;
         let mut cyclic = false;
+        println!("+ analyzing table dependency tree");
+
         loop {
             let mut unsafe_tree: VecDeque<TableFields> = VecDeque::new();
             let (safe_tree, unsafe_tree) =
@@ -281,17 +283,17 @@ impl DataGeneration<Conn> for Mysql {
                 break;
             }
 
-            println!("+ {:#?}", unsafe_tree.len());
+            println!("+ {:#?} left to analyze", unsafe_tree.len());
 
             if unsafe_tree.len() == unsafe_left {
                 println!("cyclic depedency detected, checking nullable fields");
 
-                unsafe_tree
-                    .clone()
-                    .into_iter()
-                    .for_each(|a| println!("- {:#?}", &a.table_name));
-
                 if cyclic == true {
+                    unsafe_tree
+                        .clone()
+                        .into_iter()
+                        .for_each(|a| println!("- {:#?}", &a.table_name));
+
                     break;
                 }
                 cyclic = true;
@@ -336,19 +338,19 @@ impl DataGeneration<Conn> for Mysql {
                     .clone()
                     .rel
                     .into_iter()
-                    .filter(|y| tf.table_name != y.table_name)
+                    .filter(|y| tf.table_name == y.table_name)
                     .map(|x| {
                         let at_column = tf
                             .fields
                             .clone()
                             .into_iter()
-                            .find(|f| f.field == x.referenced_column_name)
+                            .find(|f| f.field == x.column_name)
                             .unwrap();
 
                         let safe = safe_tree
                             .clone()
                             .into_iter()
-                            .any(|b| b.table_name == x.column_name);
+                            .any(|b| b.table_name == x.referenced_table_name);
 
                         NullableForeignKeys {
                             column_name: x.column_name,
