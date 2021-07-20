@@ -3,26 +3,14 @@ use std::{
     io::{self, Write},
 };
 
-use crate::{
-    byte_generator::bytes::generate_bytes,
-    configuration::config_model::GenericConfiguration,
-    datastores::{
-        datastore::DataGeneration,
-        generic::common_models::{CdDt, TableFields, TempKeys},
-        postgres::{
+use crate::{byte_generator::bytes::generate_bytes, configuration::config_model::GenericConfiguration, datastores::{datastore::DataGeneration, generic::common_models::{CdDt, ForeignKeyRel, TableFields, TempKeys}, postgres::{
             const_types::const_types,
             discover, insert,
             random_values::{generate_date_time, generate_numeric},
-        },
-    },
-    name_generator::{
+        }}, name_generator::{
         loader::{loader, name_generator_exists},
         name::generate_name,
-    },
-    number_generator::number::{generate_int_number, int_generator_exists},
-    random_number,
-    string_generator::strings::generate_alphas,
-};
+    }, number_generator::number::{generate_int_number, int_generator_exists}, random_number, string_generator::strings::generate_alphas};
 
 use super::datastore_models::Postgres;
 use postgres::{Client, NoTls};
@@ -87,6 +75,7 @@ impl DataGeneration<Client> for Postgres {
                         fk: fk_exists,
                         non_generated: false,
                         dep: dep,
+                        nullable: if f.null == "YES" { true } else { false }
                     };
                 })
                 .collect();
@@ -218,6 +207,7 @@ impl DataGeneration<Client> for Postgres {
         &mut self,
         safe_tf: &mut VecDeque<TableFields>,
         unsafe_tf: &mut VecDeque<TableFields>,
+        cyclic_dependency_check: bool
     ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
         todo!()
     }

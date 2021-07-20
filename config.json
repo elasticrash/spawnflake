@@ -31,7 +31,36 @@
                 ]
             },
             {
-                "name": "lastname",
+                "name": "DisplayName",
+                "rules": [
+                    [
+                        "Jo",
+                        "Ni",
+                        "Ste",
+                        "Da",
+                        "Sco",
+                        "Ma"
+                    ],
+                    [
+                        "ve",
+                        "vi",
+                        "pha",
+                        "ro",
+                        "na",
+                        "ri"
+                    ],
+                    [
+                        "n",
+                        "ck",
+                        "tt",
+                        "d",
+                        "than",
+                        "na"
+                    ]
+                ]
+            },
+            {
+                "name": "surname",
                 "rules": [
                     [
                         "Smi",
@@ -79,11 +108,11 @@
         "password": "password",
         "schema": "test"
     },
-    "postgres_configuration":{
+    "postgres_configuration": {
         "address": "localhost",
         "port": 5432,
         "user": "postgres",
         "password": "example",
         "schema": "public"
-    } 
+    }
 }

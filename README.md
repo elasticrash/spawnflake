@@ -2,12 +2,13 @@
 
 Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages.
 
-## whats new (v0.2.1)
-* The library now builds a dependency tree of the foreign keys so it will know in which order it needs to generate the tables (mysql only, experimental) 
-* Supports more types 
-* Support more key types and composite keys in most cases
-* Detects cyclic dependencies (but cannot handle it yet)
-* Supports column names with reserve names
+## whats new (v0.2.2)
+* Handles cyclic depedencies where nulls are allowed and inserts NULL values
+
+## known limitations
+*  In the cases of handling cyclic depedencies I am not currently updating the keys retrospectively. This is planned for a future version
+* if a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+
 ## support 
 * db support
     - mysql
@@ -50,7 +51,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 * 0.2.0 was completely refactored, configuration is stays the same
 
 ## deprecations
-* 0.1.0 to 0.1.3 is going to be yanked
+* 0.1.0 to 0.1.5 is going to be yanked
 
 ## cli 
 a pre release version is available/ check cli/readme.md for usage

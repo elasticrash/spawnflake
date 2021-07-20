@@ -12,7 +12,7 @@ use crate::{
     configuration::config_model::GenericConfiguration,
     datastores::{
         datastore::DataGeneration,
-        generic::common_models::{CdDt, TableFields, TempKeys},
+        generic::common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
         my_sql::{
             const_types::const_types,
             discover,
@@ -90,7 +90,7 @@ impl DataGeneration<Conn> for Mysql {
                         .clone()
                         .rel
                         .into_iter()
-                        .find(|r| r.column_name == f.field);
+                        .find(|r| r.column_name == f.field && r.table_name == table.table_name);
 
                     let ng = table
                         .clone()
@@ -104,6 +104,7 @@ impl DataGeneration<Conn> for Mysql {
                         fk: fk_exists,
                         non_generated: ng,
                         dep: dep,
+                        nullable: if f.null == "YES" { true } else { false },
                     };
                 })
                 .collect();
@@ -208,13 +209,18 @@ impl DataGeneration<Conn> for Mysql {
                         fk_table_data = temp_keys
                             .clone()
                             .into_iter()
-                            .find(|f| f.table_name == fk_table)
-                            .unwrap();
-                        let fk_index = random_number!(i64)(0, fk_table_data.id.len() as i64);
-                        values.push(format!(
-                            "'{}'",
-                            fk_table_data.id.get(fk_index as usize).unwrap()
-                        ));
+                            .find(|f| f.table_name == fk_table);
+
+                        match fk_table_data {
+                            Some(data) => {
+                                let fk_index = random_number!(i64)(0, data.id.len() as i64);
+                                values
+                                    .push(format!("'{}'", data.id.get(fk_index as usize).unwrap()));
+                            }
+                            None => {
+                                values.push(format!("NULL"));
+                            }
+                        }
                     }
                 }
 
@@ -265,24 +271,32 @@ impl DataGeneration<Conn> for Mysql {
 
         let mut safe_tree: VecDeque<TableFields> = VecDeque::new();
         let mut unsafe_left: usize = 0;
+        let mut cyclic = false;
+        println!("+ analyzing table dependency tree");
+
         loop {
             let mut unsafe_tree: VecDeque<TableFields> = VecDeque::new();
-
             let (safe_tree, unsafe_tree) =
-                self.build_depedency_tree(&mut safe_tree, &mut unsafe_tree);
+                self.build_depedency_tree(&mut safe_tree, &mut unsafe_tree, cyclic);
 
             if unsafe_tree.len() == 0 {
                 break;
             }
 
-            if unsafe_tree.len() == unsafe_left {
-                println!("cyclic depedency detected, exluding the following tables");
+            println!("+ {:#?} left to analyze", unsafe_tree.len());
 
-                unsafe_tree
-                    .clone()
-                    .into_iter()
-                    .for_each(|a| println!("{:#?}", &a.table_name));
-                break;
+            if unsafe_tree.len() == unsafe_left {
+                println!("cyclic depedency detected, checking nullable fields");
+
+                if cyclic == true {
+                    unsafe_tree
+                        .clone()
+                        .into_iter()
+                        .for_each(|a| println!("- {:#?}", &a.table_name));
+
+                    break;
+                }
+                cyclic = true;
             }
 
             unsafe_left = unsafe_tree.len();
@@ -295,17 +309,19 @@ impl DataGeneration<Conn> for Mysql {
         &mut self,
         safe_tree: &mut VecDeque<TableFields>,
         unsafe_tree: &mut VecDeque<TableFields>,
+        cyclic_dependency_check: bool,
     ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
         for (i, tf) in self.schema.clone().into_iter().enumerate() {
-            let exists = safe_tree
+            // check if the table exists in the safe tree
+            if safe_tree
                 .into_iter()
-                .any(|safe_tf| safe_tf.table_name == tf.table_name);
-
-            if exists {
+                .any(|safe_tf| safe_tf.table_name == tf.table_name)
+            {
                 continue;
             }
 
-            let number_of_foreign_keys = tf.clone().rel.into_iter().fold(0, |acc, x| {
+            // checks how many foreign keys the table has
+            let number_of_foreign_keys: i32 = tf.clone().rel.into_iter().fold(0, |acc, x| {
                 if x.table_name == tf.table_name {
                     acc + 1
                 } else {
@@ -313,9 +329,37 @@ impl DataGeneration<Conn> for Mysql {
                 }
             });
 
+            // if the table does not have foreign keys push to front
+            // else check if the prerequisite tables exist in the safe tree
             if tf.rel.len() == 0 || number_of_foreign_keys == 0 {
                 safe_tree.push_front(tf);
             } else {
+                let fk_refs: Vec<NullableForeignKeys> = tf
+                    .clone()
+                    .rel
+                    .into_iter()
+                    .filter(|y| tf.table_name == y.table_name)
+                    .map(|x| {
+                        let at_column = tf
+                            .fields
+                            .clone()
+                            .into_iter()
+                            .find(|f| f.field == x.column_name)
+                            .unwrap();
+
+                        let safe = safe_tree
+                            .clone()
+                            .into_iter()
+                            .any(|b| b.table_name == x.referenced_table_name);
+
+                        NullableForeignKeys {
+                            column_name: x.column_name,
+                            safe: safe,
+                            nullable: if at_column.null == "YES" { true } else { false },
+                        }
+                    })
+                    .collect();
+
                 let occurance: i32 = tf.clone().rel.into_iter().fold(0, |acc, x| {
                     if safe_tree
                         .clone()
@@ -328,10 +372,28 @@ impl DataGeneration<Conn> for Mysql {
                     }
                 });
 
-                if occurance == number_of_foreign_keys {
+                if fk_refs
+                    .clone()
+                    .into_iter()
+                    .filter(|f| f.safe == true)
+                    .count() as i32
+                    == number_of_foreign_keys
+                    || occurance == number_of_foreign_keys
+                {
                     safe_tree.push_back(tf.clone());
                 } else {
-                    unsafe_tree.push_front(tf.clone());
+                    if fk_refs
+                        .clone()
+                        .into_iter()
+                        .filter(|f| f.safe == true || f.nullable == true)
+                        .count() as i32
+                        == number_of_foreign_keys
+                        && cyclic_dependency_check == true
+                    {
+                        safe_tree.push_back(tf.clone());
+                    } else {
+                        unsafe_tree.push_front(tf.clone());
+                    }
                 }
             }
         }
