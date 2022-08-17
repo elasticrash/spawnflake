@@ -1,118 +1,108 @@
 {
-    "types": {
-        "string": [
-            {
-                "name": "firstname",
-                "rules": [
-                    [
-                        "Jo",
-                        "Ni",
-                        "Ste",
-                        "Da",
-                        "Sco",
-                        "Ma"
-                    ],
-                    [
-                        "ve",
-                        "vi",
-                        "pha",
-                        "ro",
-                        "na",
-                        "ri"
-                    ],
-                    [
-                        "n",
-                        "ck",
-                        "tt",
-                        "d",
-                        "than",
-                        "na"
-                    ]
-                ]
-            },
-            {
-                "name": "DisplayName",
-                "rules": [
-                    [
-                        "Jo",
-                        "Ni",
-                        "Ste",
-                        "Da",
-                        "Sco",
-                        "Ma"
-                    ],
-                    [
-                        "ve",
-                        "vi",
-                        "pha",
-                        "ro",
-                        "na",
-                        "ri"
-                    ],
-                    [
-                        "n",
-                        "ck",
-                        "tt",
-                        "d",
-                        "than",
-                        "na"
-                    ]
-                ]
-            },
-            {
-                "name": "surname",
-                "rules": [
-                    [
-                        "Smi",
-                        "Cla",
-                        "Whi",
-                        "Ste",
-                        "Sco",
-                        "Bri",
-                        "Ru"
-                    ],
-                    [
-                        "ve",
-                        "sse",
-                        "te",
-                        "ho",
-                        "na",
-                        "ri"
-                    ],
-                    [
-                        "th",
-                        "rck",
-                        "te",
-                        "rn",
-                        "ns",
-                        "en",
-                        "ll"
-                    ]
-                ]
-            }
-        ],
-        "integer": [
-            {
-                "name": "age",
-                "rules": [
-                    10,
-                    99
-                ]
-            }
+  "types": {
+    "string": [
+      {
+        "name": "Name",
+        "rules": [
+          ["Jo", "Ni", "Ste", "Da", "Sco", "Ma"],
+          ["ve", "vi", "pha", "ro", "na", "ri"],
+          ["n", "ck", "tt", "d", "than", "na"]
         ]
-    },
-    "mysql_configuration": {
-        "address": "localhost",
-        "port": 3306,
-        "user": "local",
-        "password": "password",
-        "schema": "test"
-    },
-    "postgres_configuration": {
-        "address": "localhost",
-        "port": 5432,
-        "user": "postgres",
-        "password": "example",
-        "schema": "public"
+      },
+      {
+        "name": "Company",
+        "rules": [
+          ["Cloud", "Phone", "SIP", "Telco", "Vo", "Ga"],
+          ["mma", "call", "phone", "sip", "voip", "happy"],
+          ["n", "centre", "place", "d", "than", "na"]
+        ]
+      },
+      {
+        "name": "DisplayName",
+        "rules": [
+          ["Jo", "Ni", "Ste", "Da", "Sco", "Ma"],
+          ["ve", "vi", "pha", "ro", "na", "ri"],
+          ["n", "ck", "tt", "d", "than", "na"]
+        ]
+      },
+      {
+        "name": "LastName",
+        "rules": [
+          ["Smi", "Cla", "Whi", "Ste", "Sco", "Bri", "Ru"],
+          ["ve", "sse", "te", "ho", "na", "ri"],
+          ["th", "rck", "te", "rn", "ns", "en", "ll"]
+        ]
+      },
+      {
+        "name": "Number1",
+        "rules": [
+          ["095", "094", "096", "097", "098", "0116", "0117"],
+          ["195", "394", "696", "797", "998", "126", "147"],
+          ["295", "494", "596", "897", "199", "136", "157"]
+        ]
+      },
+      {
+        "name": "Number2",
+        "rules": [
+          ["095", "094", "096", "097", "098", "0116", "0117"],
+          ["195", "394", "696", "797", "998", "126", "147"],
+          ["295", "494", "596", "897", "199", "136", "157"]
+        ]
+      },
+      {
+        "name": "Number3",
+        "rules": [
+          ["095", "094", "096", "097", "098", "0116", "0117"],
+          ["195", "394", "696", "797", "998", "126", "147"],
+          ["295", "494", "596", "897", "199", "136", "157"]
+        ]
+      },
+      {
+        "name": "Number4",
+        "rules": [
+          ["095", "094", "096", "097", "098", "0116", "0117"],
+          ["195", "394", "696", "797", "998", "126", "147"],
+          ["295", "494", "596", "897", "199", "136", "157"]
+        ]
+      }
+    ],
+    "integer": [
+      {
+        "name": "age",
+        "rules": [10, 99]
+      },
+      {
+        "name": "Hidden",
+        "rules": [0, 1]
+      },
+      {
+        "name": "Deleted",
+        "rules": [0, 1]
+      },
+      {
+        "name": "ReadOnly",
+        "rules": [0, 1]
+      }
+    ]
+  },
+  "table_capacity": [
+    {
+      "table": "Customers",
+      "capacity": 1
     }
+  ],
+  "mysql_configuration": {
+    "address": "localhost",
+    "port": 3306,
+    "user": "root",
+    "password": "password",
+    "schema": "test"
+  },
+  "postgres_configuration": {
+    "address": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "example",
+    "schema": "public"
+  }
 }

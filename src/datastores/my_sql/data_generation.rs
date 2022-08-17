@@ -9,7 +9,7 @@ use mysql::{Conn, Opts};
 
 use crate::{
     byte_generator::bytes::generate_bytes,
-    configuration::config_model::GenericConfiguration,
+    configuration::config_model::{Capacity, GenericConfiguration},
     datastores::{
         datastore::DataGeneration,
         generic::common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
@@ -22,7 +22,7 @@ use crate::{
     },
     name_generator::{
         loader::{loader, name_generator_exists},
-        name::generate_name,
+        name::{self, generate_name},
     },
     number_generator::number::{generate_int_number, int_generator_exists},
     random_number,
@@ -111,7 +111,25 @@ impl DataGeneration<Conn> for Mysql {
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
             let mut fk_keys: Vec<String> = vec![];
-            for _i in 0..no_of_record {
+
+            let default_capacity = vec![{
+                Capacity {
+                    table: table.table_name.clone(),
+                    capacity: no_of_record,
+                }
+            }];
+
+            let capacity_config = match &config.table_capacity {
+                Some(config) => config,
+                None => &default_capacity,
+            };
+
+            let table_capacity = capacity_config
+                .into_iter()
+                .find(|a| a.table == table.table_name)
+                .unwrap_or(&default_capacity[0]);
+
+            for _i in 0..table_capacity.capacity {
                 print!("*");
                 io::stdout().flush();
 

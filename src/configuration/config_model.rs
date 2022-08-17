@@ -6,6 +6,7 @@ pub struct GenericConfiguration {
     pub types: ValueTypes,
     pub mysql_configuration: Option<RelationalDatabaseConfiguration>,
     pub postgres_configuration: Option<RelationalDatabaseConfiguration>,
+    pub table_capacity: Option<Vec<Capacity>>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -18,6 +19,12 @@ pub struct ValueTypes {
 pub struct Patterns<T> {
     pub name: String,
     pub rules: Vec<T>,
+}
+
+#[derive(Deserialize, Clone, Debug, PartialEq)]
+pub struct Capacity {
+    pub table: String,
+    pub capacity: i32,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
