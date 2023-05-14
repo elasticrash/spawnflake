@@ -7,13 +7,13 @@ use super::const_types::const_types;
 
 pub fn generate_date_time(ctype: &str) -> Option<String> {
     if ctype.starts_with(const_types::DATETIME) {
-        Some(generate_datetime().to_string())
+        Some(generate_datetime())
     } else if ctype.starts_with(const_types::DATE) {
         Some(generate_date().to_string())
     } else if ctype.starts_with(const_types::TIMESTAMP) {
-        Some(generate_datetime().to_string())
+        Some(generate_datetime())
     } else if ctype.starts_with(const_types::TIME) {
-        Some(generate_time().to_string())
+        Some(generate_time())
     } else if ctype.starts_with(const_types::YEAR) {
         Some(random_number!(i32)(1970, 2021).to_string())
     } else {
@@ -41,8 +41,8 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
     } else if ctype.starts_with(const_types::UNSINGED_BIGINT) {
         Some(random_number!(i64)(0, 2_i64.pow(31) - 1).to_string())
     } else if ctype.starts_with(const_types::DECIMAL) || ctype.starts_with(const_types::DOUBLE) {
-        let start_bytes = ctype.find("(").unwrap_or(0);
-        let end_bytes = ctype.find(")").unwrap_or(ctype.len());
+        let start_bytes = ctype.find('(').unwrap_or(0);
+        let end_bytes = ctype.find(')').unwrap_or(ctype.len());
 
         let d_size = ctype[(start_bytes + 1)..end_bytes].split(",");
         let md_size = d_size.collect::<Vec<&str>>();
@@ -86,8 +86,8 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
 }
 
 pub fn select_enum(ctype: &str) -> Option<String> {
-    let start_bytes = ctype.find("(").unwrap_or(0);
-    let end_bytes = ctype.find(")").unwrap_or(ctype.len());
+    let start_bytes = ctype.find('(').unwrap_or(0);
+    let end_bytes = ctype.find(')').unwrap_or(ctype.len());
 
     let enum_collection = &ctype[(start_bytes + 1)..end_bytes];
     let enum_values: Vec<&str> = enum_collection.split(",").collect();

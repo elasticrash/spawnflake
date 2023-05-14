@@ -1,4 +1,4 @@
-use super::generic::common_models::{ForeignKeyRel, TableFields};
+use super::generic::common_models::TableFields;
 use crate::configuration::config_model::GenericConfiguration;
 use std::collections::VecDeque;
 
@@ -10,6 +10,6 @@ pub trait DataGeneration<T> {
         &mut self,
         safe_tf: &mut VecDeque<TableFields>,
         unsafe_tf: &mut VecDeque<TableFields>,
-        cyclic_dependency_check: bool
+        cyclic_dependency_check: bool,
     ) -> (VecDeque<TableFields>, VecDeque<TableFields>);
 }

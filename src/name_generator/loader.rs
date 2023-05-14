@@ -57,7 +57,6 @@ mod tests {
                     password: "".to_string(),
                     schema: "".to_string(),
                 }),
-                postgres_configuration: None,
             },
             "test",
         );
@@ -83,7 +82,6 @@ mod tests {
                     password: "".to_string(),
                     schema: "".to_string(),
                 }),
-                postgres_configuration: None,
             },
             "test",
         );

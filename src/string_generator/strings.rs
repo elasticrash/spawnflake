@@ -18,8 +18,8 @@ pub fn generate_alphas(string_type: &str) -> String {
         }
         result
     } else {
-        let start_bytes = string_type.find("(").unwrap_or(0);
-        let end_bytes = string_type.find(")").unwrap_or(string_type.len());
+        let start_bytes = string_type.find('(').unwrap_or(0);
+        let end_bytes = string_type.find(')').unwrap_or(string_type.len());
 
         let v_size = &string_type[(start_bytes + 1)..end_bytes];
         let mut result = "".to_string();

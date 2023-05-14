@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use spawnflake::{configuration::{self, config_model::GenericConfiguration}, datastores::{datastore::DataGeneration, my_sql::datastore_models::Mysql, postgres::datastore_models::Postgres}};
+use spawnflake::{configuration::{self, config_model::GenericConfiguration}, datastores::{datastore::DataGeneration, my_sql::datastore_models::Mysql}};
 
 fn main() {
     let matches = App::new("Spawnflake CLI")
@@ -43,11 +43,6 @@ fn main() {
             let mut db = Mysql::new();
             db.spawn(&config, size);
         }
-        if config.postgres_configuration != None {
-            println!("generating data for postgres datastore");
-            let mut db = Postgres::new();
-            db.spawn(&config, 10);
-        }
     }
 
     if datastore  == "mysql"{
@@ -56,15 +51,6 @@ fn main() {
             db.spawn(&config, size);
         } else{
             println!("mysql Configuration is missing");
-        }
-    }
-
-    if datastore  == "postgres"{
-        if config.postgres_configuration != None {
-            let mut db = Postgres::new();
-            db.spawn(&config, 10);
-        } else{
-            println!("postgres Configuration is missing");
         }
     }
 }

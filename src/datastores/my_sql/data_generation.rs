@@ -71,43 +71,42 @@ impl DataGeneration<Conn> for Mysql {
 
         let mut temp_keys: Vec<TempKeys> = vec![];
         for table in &self.schema {
-            println!("");
+            println!();
             println!("* Generating records for {:?}", &table.table_name);
 
-            let mut columns: Vec<CdDt> = table
-                .clone()
-                .fields
-                .into_iter()
-                .filter(|a| a.extra == "")
-                .map(|f| {
-                    let fk_exists = table
-                        .clone()
-                        .rel
-                        .into_iter()
-                        .any(|r| r.column_name == f.field);
+            let mut columns: Vec<CdDt> =
+                table
+                    .clone()
+                    .fields
+                    .into_iter()
+                    .filter(|a| a.extra.is_empty())
+                    .map(|f| {
+                        let fk_exists = table
+                            .clone()
+                            .rel
+                            .into_iter()
+                            .any(|r| r.column_name == f.field);
 
-                    let dep = table
-                        .clone()
-                        .rel
-                        .into_iter()
-                        .find(|r| r.column_name == f.field && r.table_name == table.table_name);
+                        let dep =
+                            table.clone().rel.into_iter().find(|r| {
+                                r.column_name == f.field && r.table_name == table.table_name
+                            });
 
-                    let ng = table
-                        .clone()
-                        .fields
-                        .into_iter()
-                        .any(|r| r.key == "PRI" && r.extra == "" && r.field == f.field);
+                        let ng =
+                            table.clone().fields.into_iter().any(|r| {
+                                r.key == "PRI" && r.extra.is_empty() && r.field == f.field
+                            });
 
-                    return CdDt {
-                        name: f.field,
-                        data_type: f.data_type,
-                        fk: fk_exists,
-                        non_generated: ng,
-                        dep: dep,
-                        nullable: if f.null == "YES" { true } else { false },
-                    };
-                })
-                .collect();
+                        CdDt {
+                            name: f.field,
+                            data_type: f.data_type,
+                            fk: fk_exists,
+                            non_generated: ng,
+                            dep,
+                            nullable: f.null == "YES",
+                        }
+                    })
+                    .collect();
 
             columns.sort_by(|a, b| a.fk.cmp(&b.fk));
             let mut fk_keys: Vec<String> = vec![];
@@ -118,8 +117,8 @@ impl DataGeneration<Conn> for Mysql {
                 let mut values: Vec<String> = vec![];
                 let mut fk_table_data;
                 for cd in &columns {
-                    if cd.clone().fk == false || cd.non_generated == true {
-                        let end_bytes = cd.data_type.find("(").unwrap_or(cd.data_type.len());
+                    if cd.clone().fk == false || cd.non_generated {
+                        let end_bytes = cd.data_type.find('(').unwrap_or(cd.data_type.len());
 
                         match &cd.data_type[0..end_bytes] {
                             const_types::VARCHAR
@@ -214,11 +213,10 @@ impl DataGeneration<Conn> for Mysql {
                         match fk_table_data {
                             Some(data) => {
                                 let fk_index = random_number!(i64)(0, data.id.len() as i64);
-                                values
-                                    .push(format!("'{}'", data.id.get(fk_index as usize).unwrap()));
+                                values.push(data.id.get(fk_index as usize).unwrap().to_string());
                             }
                             None => {
-                                values.push(format!("NULL"));
+                                values.push("NULL".to_string());
                             }
                         }
                     }
@@ -235,7 +233,7 @@ impl DataGeneration<Conn> for Mysql {
                         .join(","),
                     values.join(","),
                 );
-                if !(columns.clone().into_iter().any(|f| f.non_generated == true)) {
+                if !(columns.clone().into_iter().any(|f| f.non_generated)) {
                     let key = insert::last_id(&mut connection).to_string();
                     fk_keys.push(key);
                 }
@@ -276,10 +274,12 @@ impl DataGeneration<Conn> for Mysql {
 
         loop {
             let mut unsafe_tree: VecDeque<TableFields> = VecDeque::new();
+            // TODO check if this is the intented behaviour it's been quite a long time and I don't
+            // remember (is safe_tree supposed to be ovewritten?)
             let (safe_tree, unsafe_tree) =
                 self.build_depedency_tree(&mut safe_tree, &mut unsafe_tree, cyclic);
 
-            if unsafe_tree.len() == 0 {
+            if unsafe_tree.is_empty() {
                 break;
             }
 
@@ -288,7 +288,7 @@ impl DataGeneration<Conn> for Mysql {
             if unsafe_tree.len() == unsafe_left {
                 println!("cyclic depedency detected, checking nullable fields");
 
-                if cyclic == true {
+                if cyclic {
                     unsafe_tree
                         .clone()
                         .into_iter()
@@ -311,7 +311,7 @@ impl DataGeneration<Conn> for Mysql {
         unsafe_tree: &mut VecDeque<TableFields>,
         cyclic_dependency_check: bool,
     ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
-        for (i, tf) in self.schema.clone().into_iter().enumerate() {
+        for (_i, tf) in self.schema.clone().into_iter().enumerate() {
             // check if the table exists in the safe tree
             if safe_tree
                 .into_iter()
@@ -331,7 +331,7 @@ impl DataGeneration<Conn> for Mysql {
 
             // if the table does not have foreign keys push to front
             // else check if the prerequisite tables exist in the safe tree
-            if tf.rel.len() == 0 || number_of_foreign_keys == 0 {
+            if tf.rel.is_empty() || number_of_foreign_keys == 0 {
                 safe_tree.push_front(tf);
             } else {
                 let fk_refs: Vec<NullableForeignKeys> = tf
@@ -354,8 +354,8 @@ impl DataGeneration<Conn> for Mysql {
 
                         NullableForeignKeys {
                             column_name: x.column_name,
-                            safe: safe,
-                            nullable: if at_column.null == "YES" { true } else { false },
+                            safe,
+                            nullable: at_column.null == "YES",
                         }
                     })
                     .collect();
@@ -372,11 +372,7 @@ impl DataGeneration<Conn> for Mysql {
                     }
                 });
 
-                if fk_refs
-                    .clone()
-                    .into_iter()
-                    .filter(|f| f.safe == true)
-                    .count() as i32
+                if fk_refs.clone().into_iter().filter(|f| f.safe).count() as i32
                     == number_of_foreign_keys
                     || occurance == number_of_foreign_keys
                 {
@@ -385,10 +381,10 @@ impl DataGeneration<Conn> for Mysql {
                     if fk_refs
                         .clone()
                         .into_iter()
-                        .filter(|f| f.safe == true || f.nullable == true)
+                        .filter(|f| f.safe || f.nullable)
                         .count() as i32
                         == number_of_foreign_keys
-                        && cyclic_dependency_check == true
+                        && cyclic_dependency_check
                     {
                         safe_tree.push_back(tf.clone());
                     } else {

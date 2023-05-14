@@ -5,7 +5,6 @@ use serde::Deserialize;
 pub struct GenericConfiguration {
     pub types: ValueTypes,
     pub mysql_configuration: Option<RelationalDatabaseConfiguration>,
-    pub postgres_configuration: Option<RelationalDatabaseConfiguration>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]

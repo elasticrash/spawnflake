@@ -1,18 +1,10 @@
-use crate::{
-    datastores::{
-        my_sql::const_types::const_types as sqlt, postgres::const_types::const_types as psqlt,
-    },
-    random_number,
-};
+use crate::{datastores::my_sql::const_types::const_types as sqlt, random_number};
 
 pub fn generate_bytes(binary_type: &str) -> String {
     let mut result = "".to_string();
-    if binary_type.starts_with(sqlt::BINARY)
-        || binary_type.starts_with(sqlt::VARBINARY)
-        || binary_type.starts_with(psqlt::BYTE)
-    {
-        let start_bytes = binary_type.find("(").unwrap_or(0);
-        let end_bytes = binary_type.find(")").unwrap_or(binary_type.len());
+    if binary_type.starts_with(sqlt::BINARY) || binary_type.starts_with(sqlt::VARBINARY) {
+        let start_bytes = binary_type.find('(').unwrap_or(0);
+        let end_bytes = binary_type.find(')').unwrap_or(binary_type.len());
         let v_size = &binary_type[(start_bytes + 1)..end_bytes];
         let capacity = v_size.parse::<usize>().unwrap_or(1);
         for _i in 0..capacity {
