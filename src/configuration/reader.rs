@@ -23,7 +23,7 @@ pub fn read(filename: &str) -> serde_json::Result<GenericConfiguration> {
             config
         }
         Err(why) => {
-            println!("{}", why);
+            println!("{why}");
             panic!()
         }
     }

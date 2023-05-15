@@ -9,5 +9,5 @@ pub mod const_types;
 
 pub mod datastore_models;
 
-// DataGeneration trait implementation    
+// DataGeneration trait implementation
 pub mod data_generation;

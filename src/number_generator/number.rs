@@ -31,10 +31,7 @@ pub fn generate_int_number(config: &GenericConfiguration, name: &str) -> i32 {
 pub fn int_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
     let name_generator = &config.types.integer.iter().find(|x| x.name == name);
 
-    match name_generator {
-        Some(_) => true,
-        None => false,
-    }
+    name_generator.is_some()
 }
 
 #[cfg(test)]

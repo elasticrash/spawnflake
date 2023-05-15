@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: depedencies
+      run: sudo apt-get install -y libssl-dev pkg-config distro-info-data google-perftools
     - name: Build
       run: cargo build --verbose
     - name: Run tests

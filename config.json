@@ -107,12 +107,5 @@
         "user": "local",
         "password": "password",
         "schema": "test"
-    },
-    "postgres_configuration": {
-        "address": "localhost",
-        "port": 5432,
-        "user": "postgres",
-        "password": "example",
-        "schema": "public"
     }
 }

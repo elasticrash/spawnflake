@@ -14,13 +14,3 @@ services:
     ports:
       - "3306:3306"
     container_name: mysqlnet
-  db:
-    build:
-      context: .
-      dockerfile: Postgres.Dockerfile
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-      - "5432:5432"
-    container_name: psqlnet

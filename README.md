@@ -1,9 +1,11 @@
 # 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-Spawnflake generates random data and/or based on patterns for relational databases. This is still in its early stages.
+Spawnflake generates random data and/or based on patterns for relational databases.
 
-## what's new (v0.2.2)
-* Handles cyclic dependencies where nulls are allowed and inserts NULL values
+
+## what's new (v0.2.3)
+* I dropped the Postgres implementation for the time being so I can get back to the project and focus in one database at a time. There is still a branch with the postgres implementation
+* Updated Syntax to be 1.66+ compatible
 
 ## known limitations
 *  In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
@@ -15,35 +17,31 @@ Spawnflake generates random data and/or based on patterns for relational databas
     - postgres (minimal support and only on public schema)
 * supports the following types and functionality:
 
-| Datastore      | Data type | Random Data Generator | Pattern Based Generator |
-| ----------- | ----------- |----------- | ----------- |
-| Mysql/Postgres+      | varchar       | ✔️      | ✔️       |
-| Mysql/Postgres   | int        | ✔️      | ✔️       |
-| Mysql   | unsigned int        | ✔️      | ❌       |
-| Mysql/Postgres   | smallint        | ✔️      | ❌       |
-| Mysql   | unsigned smallint        | ✔️      | ❌       |
-| Mysql   | tinyint/unsigned tinyint        | ✔️      | ❌       |
-| Mysql   | mediumint        | ✔️      | ❌       |
-| Mysql/Postgres   | bigint       | ✔️      | ❌       |
-| Mysql   | unsigned bigint        | ✔️      | ❌       |
-| Mysql/Postgres+   | decimal        | ✔️      | ❌       |
-| Mysql   | float        | ✔️      | ❌       |
-| Mysql/Postgres   | double        | ✔️      | ❌       |
-| Mysql   | bit        | ✔️      | ❌       |
-| Mysql/Postgres   | time        | ✔️      | ❌       |
-| Mysql/Postgres   | timestamp        | ✔️      | ❌       |
-| Mysql/Postgres   | date        | ✔️      | ❌       |
-| Mysql   | year        | ✔️      | ❌       |
-| Mysql/Postgres   | char        | ✔️      | ❌       |
-| Mysql   | binary        | ✔️      | ❌       |
-| Mysql/Postgres   | text        | ✔️      | ❌       |
-| Mysql   | longtext        | ✔️      | ❌       |
-| Mysql   | blob/longblob        | ✔️      | ❌       |
-| Mysql   | enum        | ❌      | ✔️       |
-| Postgres   | real        | ✔️      | ❌       |
-| Postgres  | interval        | ✔️      | ❌       |
-| Postgres  | byte        | ✔️      | ❌       |
-| Postgres  | boolean        | ✔️      | ❌       |
+| Datastore   | Data type                | Random Data Generator  | Pattern Based Generator  |
+| ----------- | -----------              |-----------             | -----------              |
+| Mysql       | varchar                  | ✔️                      | ✔️                        |
+| Mysql       | int                      | ✔️                      | ✔️                        |
+| Mysql       | unsigned int             | ✔️                      | ❌                       |
+| Mysql       | smallint                 | ✔️                      | ❌                       |
+| Mysql       | unsigned smallint        | ✔️                      | ❌                       |
+| Mysql       | tinyint/unsigned tinyint | ✔️                      | ❌                       |
+| Mysql       | mediumint                | ✔️                      | ❌                       |  
+| Mysql       | bigint                   | ✔️                      | ❌                       |
+| Mysql       | unsigned bigint          | ✔️                      | ❌                       |
+| Mysql       | decimal                  | ✔️                      | ❌                       |
+| Mysql       | float                    | ✔️                      | ❌                       |
+| Mysql       | double                   | ✔️                      | ❌                       |
+| Mysql       | bit                      | ✔️                      | ❌                       |
+| Mysql       | time                     | ✔️                      | ❌                       |
+| Mysql       | timestamp                | ✔️                      | ❌                       |
+| Mysql       | date                     | ✔️                      | ❌                       |
+| Mysql       | year                     | ✔️                      | ❌                       |
+| Mysql       | char                     | ✔️                      | ❌                       |
+| Mysql       | binary                   | ✔️                      | ❌                       |
+| Mysql       | text                     | ✔️                      | ❌                       |
+| Mysql       | longtext                 | ✔️                      | ❌                       |
+| Mysql       | blob/longblob            | ✔️                      | ❌                       |
+| Mysql       | enum                     | ❌                     | ✔️                        |
 
 (+) works but not necessary with expected outcome
 
