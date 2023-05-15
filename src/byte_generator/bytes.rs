@@ -1,4 +1,4 @@
-use crate::{datastores::my_sql::const_types::const_types as sqlt, random_number};
+use crate::{datastores::my_sql::const_types::db_types as sqlt, random_number};
 
 pub fn generate_bytes(binary_type: &str) -> String {
     let mut result = "".to_string();
@@ -10,14 +10,14 @@ pub fn generate_bytes(binary_type: &str) -> String {
         for _i in 0..capacity {
             result = format!("{}{:X}", result, random_number!(i32)(0, 16));
             if result.len() % 2 != 0 {
-                result = format!("0{}", result);
+                result = format!("0{result}");
             }
         }
     } else if binary_type.eq(sqlt::BLOB) || binary_type.eq(sqlt::LONG_BLOB) {
         for _i in 0..50 {
             result = format!("{}{:X}", result, random_number!(i32)(0, 16));
             if result.len() % 2 != 0 {
-                result = format!("0{}", result);
+                result = format!("0{result}");
             }
         }
     } else {

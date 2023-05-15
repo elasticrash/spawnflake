@@ -24,10 +24,7 @@ pub fn loader(config: &GenericConfiguration, name: &str) -> Vec<Chain> {
 pub fn name_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
     let name_generator = &config.types.string.iter().find(|x| x.name == name);
 
-    match name_generator {
-        Some(_) => true,
-        None => false,
-    }
+    name_generator.is_some()
 }
 
 #[cfg(test)]

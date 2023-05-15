@@ -14,7 +14,7 @@ use crate::{
         datastore::DataGeneration,
         generic::common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
         my_sql::{
-            const_types::const_types,
+            const_types::db_types,
             discover,
             insert::{self, has_data},
             random_values::{generate_date_time, generate_numeric, select_enum},
@@ -117,66 +117,66 @@ impl DataGeneration<Conn> for Mysql {
                 let mut values: Vec<String> = vec![];
                 let mut fk_table_data;
                 for cd in &columns {
-                    if cd.clone().fk == false || cd.non_generated {
+                    if !cd.clone().fk || cd.non_generated {
                         let end_bytes = cd.data_type.find('(').unwrap_or(cd.data_type.len());
 
                         match &cd.data_type[0..end_bytes] {
-                            const_types::VARCHAR
-                            | const_types::CHAR
-                            | const_types::TEXT
-                            | const_types::LONG_TEXT
-                            | const_types::MEDIUM_TEXT => {
+                            db_types::VARCHAR
+                            | db_types::CHAR
+                            | db_types::TEXT
+                            | db_types::LONG_TEXT
+                            | db_types::MEDIUM_TEXT => {
                                 if cd.non_generated {
                                     let next_id =
                                         (has_data(&mut connection, table.table_name.to_owned())
                                             + 1)
                                         .to_string();
-                                    values.push(format!("'{}'", next_id));
+                                    values.push(format!("'{next_id}'"));
 
                                     fk_keys.push(next_id);
-                                } else if name_generator_exists(&config, &cd.name)
-                                    && cd.data_type.contains(const_types::VARCHAR)
+                                } else if name_generator_exists(config, &cd.name)
+                                    && cd.data_type.contains(db_types::VARCHAR)
                                 {
                                     values.push(format!(
                                         "'{}'",
-                                        generate_name(&loader(&config, &cd.name))
+                                        generate_name(&loader(config, &cd.name))
                                     ));
                                 } else {
                                     values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                                 }
                             }
-                            const_types::BINARY
-                            | const_types::VARBINARY
-                            | const_types::BLOB
-                            | const_types::LONG_BLOB => {
+                            db_types::BINARY
+                            | db_types::VARBINARY
+                            | db_types::BLOB
+                            | db_types::LONG_BLOB => {
                                 values.push(format!("0x{}", generate_bytes(&cd.data_type)));
                             }
-                            const_types::INT
-                            | const_types::UNSIGNED_INT
-                            | const_types::SMALLINT
-                            | const_types::UNSINGED_SMALLINT
-                            | const_types::TINYINT
-                            | const_types::UNSINGED_TINYINT
-                            | const_types::MEDIUMINT
-                            | const_types::BIGINT
-                            | const_types::UNSINGED_BIGINT
-                            | const_types::DECIMAL
-                            | const_types::FLOAT
-                            | const_types::DOUBLE => {
+                            db_types::INT
+                            | db_types::UNSIGNED_INT
+                            | db_types::SMALLINT
+                            | db_types::UNSINGED_SMALLINT
+                            | db_types::TINYINT
+                            | db_types::UNSINGED_TINYINT
+                            | db_types::MEDIUMINT
+                            | db_types::BIGINT
+                            | db_types::UNSINGED_BIGINT
+                            | db_types::DECIMAL
+                            | db_types::FLOAT
+                            | db_types::DOUBLE => {
                                 if cd.non_generated {
                                     let next_id =
                                         (has_data(&mut connection, table.table_name.to_owned())
                                             + 1)
                                         .to_string();
-                                    values.push(format!("'{}'", next_id));
+                                    values.push(format!("'{next_id}'",));
 
                                     fk_keys.push(next_id);
-                                } else if int_generator_exists(&config, &cd.name)
-                                    && cd.data_type.eq(const_types::INT)
+                                } else if int_generator_exists(config, &cd.name)
+                                    && cd.data_type.eq(db_types::INT)
                                 {
                                     values.push(format!(
                                         "'{}'",
-                                        generate_int_number(&config, &cd.name).to_string()
+                                        generate_int_number(config, &cd.name)
                                     ));
                                 } else {
                                     values.push(format!(
@@ -185,21 +185,21 @@ impl DataGeneration<Conn> for Mysql {
                                     ));
                                 }
                             }
-                            const_types::DATETIME
-                            | const_types::DATE
-                            | const_types::TIMESTAMP
-                            | const_types::TIME
-                            | const_types::YEAR => {
+                            db_types::DATETIME
+                            | db_types::DATE
+                            | db_types::TIMESTAMP
+                            | db_types::TIME
+                            | db_types::YEAR => {
                                 values.push(format!(
                                     "'{}'",
                                     generate_date_time(&cd.data_type).unwrap()
                                 ));
                             }
-                            const_types::BIT => {
-                                values.push(format!("{}", random_number!(i8)(0, 2).to_string()));
+                            db_types::BIT => {
+                                values.push(format!("{}", random_number!(i8)(0, 2)));
                             }
-                            const_types::ENUM => {
-                                values.push(format!("{}", select_enum(&cd.data_type).unwrap()));
+                            db_types::ENUM => {
+                                values.push(select_enum(&cd.data_type).unwrap().to_string());
                             }
                             _ => println!("type {} not currently supported", cd.data_type),
                         }
@@ -251,12 +251,12 @@ impl DataGeneration<Conn> for Mysql {
             });
         }
     }
-    fn set_schema(&mut self, conn: &mut Conn, schema: &String) {
-        let tables = discover::get_tables(conn, schema.clone());
+    fn set_schema(&mut self, conn: &mut Conn, schema: &str) {
+        let tables = discover::get_tables(conn, schema.to_string());
 
         for t in tables.unwrap() {
             let fields = discover::get_columns(conn, t.to_string());
-            let get_foreign_keys = discover::get_foreign_keys(conn, t.to_string(), schema.clone());
+            let get_foreign_keys = discover::get_foreign_keys(conn, t.to_string(), schema.to_string());
 
             self.schema.push(TableFields {
                 table_name: t.clone(),
@@ -290,7 +290,6 @@ impl DataGeneration<Conn> for Mysql {
 
                 if cyclic {
                     unsafe_tree
-                        .clone()
                         .into_iter()
                         .for_each(|a| println!("- {:#?}", &a.table_name));
 
@@ -314,7 +313,7 @@ impl DataGeneration<Conn> for Mysql {
         for (_i, tf) in self.schema.clone().into_iter().enumerate() {
             // check if the table exists in the safe tree
             if safe_tree
-                .into_iter()
+                .iter_mut()
                 .any(|safe_tf| safe_tf.table_name == tf.table_name)
             {
                 continue;
@@ -372,24 +371,20 @@ impl DataGeneration<Conn> for Mysql {
                     }
                 });
 
-                if fk_refs.clone().into_iter().filter(|f| f.safe).count() as i32
+                if (fk_refs.clone().into_iter().filter(|f| f.safe).count() as i32
                     == number_of_foreign_keys
-                    || occurance == number_of_foreign_keys
-                {
-                    safe_tree.push_back(tf.clone());
-                } else {
-                    if fk_refs
+                    || occurance == number_of_foreign_keys)
+                    || (fk_refs
                         .clone()
                         .into_iter()
                         .filter(|f| f.safe || f.nullable)
                         .count() as i32
                         == number_of_foreign_keys
-                        && cyclic_dependency_check
-                    {
-                        safe_tree.push_back(tf.clone());
-                    } else {
-                        unsafe_tree.push_front(tf.clone());
-                    }
+                        && cyclic_dependency_check)
+                {
+                    safe_tree.push_back(tf.clone());
+                } else {
+                    unsafe_tree.push_front(tf.clone());
                 }
             }
         }

@@ -7,9 +7,9 @@ pub struct Mysql {
 }
 
 impl Display for Mysql {
-    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for x in &self.schema {
-            println!("{}", x.table_name)
+            writeln!(f, "{}", x.table_name)?
         }
 
         Ok(())

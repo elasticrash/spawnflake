@@ -3,18 +3,18 @@ use crate::{
     random_number,
 };
 
-use super::const_types::const_types;
+use super::const_types::db_types;
 
 pub fn generate_date_time(ctype: &str) -> Option<String> {
-    if ctype.starts_with(const_types::DATETIME) {
+    if ctype.starts_with(db_types::DATETIME) {
         Some(generate_datetime())
-    } else if ctype.starts_with(const_types::DATE) {
-        Some(generate_date().to_string())
-    } else if ctype.starts_with(const_types::TIMESTAMP) {
+    } else if ctype.starts_with(db_types::DATE) {
+        Some(generate_date())
+    } else if ctype.starts_with(db_types::TIMESTAMP) {
         Some(generate_datetime())
-    } else if ctype.starts_with(const_types::TIME) {
+    } else if ctype.starts_with(db_types::TIME) {
         Some(generate_time())
-    } else if ctype.starts_with(const_types::YEAR) {
+    } else if ctype.starts_with(db_types::YEAR) {
         Some(random_number!(i32)(1970, 2021).to_string())
     } else {
         None
@@ -22,29 +22,29 @@ pub fn generate_date_time(ctype: &str) -> Option<String> {
 }
 
 pub fn generate_numeric(ctype: &str) -> Option<String> {
-    if ctype.starts_with(const_types::TINYINT) {
+    if ctype.starts_with(db_types::TINYINT) {
         Some(random_number!(i8)(0, i8::MAX).to_string())
-    } else if ctype.starts_with(const_types::UNSINGED_TINYINT) {
+    } else if ctype.starts_with(db_types::UNSINGED_TINYINT) {
         Some(random_number!(i8)(0, i8::MAX).to_string())
-    } else if ctype.starts_with(const_types::SMALLINT) {
+    } else if ctype.starts_with(db_types::SMALLINT) {
         Some(random_number!(i16)(0, i16::MAX).to_string())
-    } else if ctype.starts_with(const_types::UNSINGED_SMALLINT) {
+    } else if ctype.starts_with(db_types::UNSINGED_SMALLINT) {
         Some(random_number!(u16)(u16::MIN, u16::MAX).to_string())
-    } else if ctype.starts_with(const_types::MEDIUMINT) {
+    } else if ctype.starts_with(db_types::MEDIUMINT) {
         Some(random_number!(i32)(0, 8388607).to_string())
-    } else if ctype.starts_with(const_types::INT) {
+    } else if ctype.starts_with(db_types::INT) {
         Some(random_number!(i32)(0, i32::MAX).to_string())
-    } else if ctype.starts_with(const_types::UNSIGNED_INT) {
+    } else if ctype.starts_with(db_types::UNSIGNED_INT) {
         Some(random_number!(u32)(u32::MIN, u32::MAX).to_string())
-    } else if ctype.starts_with(const_types::BIGINT) {
+    } else if ctype.starts_with(db_types::BIGINT) {
         Some(random_number!(i64)(0, 2_i64.pow(31) - 1).to_string())
-    } else if ctype.starts_with(const_types::UNSINGED_BIGINT) {
+    } else if ctype.starts_with(db_types::UNSINGED_BIGINT) {
         Some(random_number!(i64)(0, 2_i64.pow(31) - 1).to_string())
-    } else if ctype.starts_with(const_types::DECIMAL) || ctype.starts_with(const_types::DOUBLE) {
+    } else if ctype.starts_with(db_types::DECIMAL) || ctype.starts_with(db_types::DOUBLE) {
         let start_bytes = ctype.find('(').unwrap_or(0);
         let end_bytes = ctype.find(')').unwrap_or(ctype.len());
 
-        let d_size = ctype[(start_bytes + 1)..end_bytes].split(",");
+        let d_size = ctype[(start_bytes + 1)..end_bytes].split(',');
         let md_size = d_size.collect::<Vec<&str>>();
         if md_size.len() == 2 {
             let a = md_size[0].parse::<i32>().unwrap_or(1);
@@ -63,22 +63,22 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
                 num_a.truncate(i32::abs(num_a.len() as i32 - num_b.len() as i32) as usize);
                 return Some(format!(
                     "{}.{}", //TODO: prefix zeros
-                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1)).to_string(),
-                    random_number!(i64)(0, num_b.parse::<i64>().unwrap_or(1)).to_string(),
+                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1)),
+                    random_number!(i64)(0, num_b.parse::<i64>().unwrap_or(1)),
                 ));
             } else {
                 return Some(format!(
                     "{}",
-                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1)).to_string()
+                    random_number!(i64)(0, num_a.parse::<i64>().unwrap_or(1))
                 ));
             }
         }
         return Some(format!(
             "{}.{}",
-            random_number!(i32)(1, 10).to_string(),
-            random_number!(i32)(1, 10).to_string(),
+            random_number!(i32)(1, 10),
+            random_number!(i32)(1, 10),
         ));
-    } else if ctype.starts_with(const_types::FLOAT) {
+    } else if ctype.starts_with(db_types::FLOAT) {
         Some(random_number!(f32)(0., f32::MAX).to_string())
     } else {
         None
@@ -90,7 +90,7 @@ pub fn select_enum(ctype: &str) -> Option<String> {
     let end_bytes = ctype.find(')').unwrap_or(ctype.len());
 
     let enum_collection = &ctype[(start_bytes + 1)..end_bytes];
-    let enum_values: Vec<&str> = enum_collection.split(",").collect();
+    let enum_values: Vec<&str> = enum_collection.split(',').collect();
     let enum_index = random_number!(usize)(0, enum_values.len());
     Some(enum_values[enum_index].to_string())
 }

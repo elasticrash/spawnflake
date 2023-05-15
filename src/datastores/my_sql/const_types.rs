@@ -1,4 +1,4 @@
-pub mod const_types {
+pub mod db_types {
     pub const VARCHAR: &str = "varchar";
     pub const INT: &str = "int";
     pub const UNSIGNED_INT: &str = "int unsigned";

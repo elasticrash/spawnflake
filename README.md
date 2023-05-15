@@ -5,6 +5,7 @@ Spawnflake generates random data and/or based on patterns for relational databas
 
 ## what's new (v0.2.3)
 * I dropped the Postgres implementation for the time being so I can get back to the project and focus in one database at a time. There is still a branch with the postgres implementation
+* Updated Syntax to be 1.66+ compatible
 
 ## known limitations
 *  In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
