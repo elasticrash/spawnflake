@@ -14,13 +14,12 @@ Spawnflake generates random data and/or based on patterns for relational databas
 ## support 
 * db support
     - mysql
-    - postgres (minimal support and only on public schema)
 * supports the following types and functionality:
 
-| Datastore   | Data type                | Random Data Generator  | Pattern Based Generator  |
-| ----------- | -----------              |-----------             | -----------              |
-| Mysql       | varchar                  | ✔️                      | ✔️                        |
-| Mysql       | int                      | ✔️                      | ✔️                        |
+| Datastore   | Data type                | Random Data Generator   | Pattern Based Generator   |
+| ----------- | -----------              |-----------              | -----------               |
+| Mysql       | varchar                  | ✔️                      | ✔️                       |
+| Mysql       | int                      | ✔️                      | ✔️                       |
 | Mysql       | unsigned int             | ✔️                      | ❌                       |
 | Mysql       | smallint                 | ✔️                      | ❌                       |
 | Mysql       | unsigned smallint        | ✔️                      | ❌                       |
@@ -41,12 +40,13 @@ Spawnflake generates random data and/or based on patterns for relational databas
 | Mysql       | text                     | ✔️                      | ❌                       |
 | Mysql       | longtext                 | ✔️                      | ❌                       |
 | Mysql       | blob/longblob            | ✔️                      | ❌                       |
-| Mysql       | enum                     | ❌                     | ✔️                        |
+| Mysql       | enum                     | ❌                      | ✔️                       |
 
 (+) works but not necessary with expected outcome
 
 ## breaking changes
-* 0.2.0 was completely refactored, configuration is stays the same
+* 0.2.3 postgres no longer supported
+* 0.2.0 was completely refactored, configuration stayed the same
 
 ## deprecations
 * 0.1.0 to 0.1.5 is going to be yanked
