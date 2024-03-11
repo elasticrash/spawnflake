@@ -24,7 +24,10 @@ use crate::{
         loader::{loader, name_generator_exists},
         name::generate_name,
     },
-    number_generator::number::{generate_int_number, int_generator_exists},
+    number_generator::number::{
+        float_point_generator_exists, generate_float_number, generate_int_number,
+        int_generator_exists,
+    },
     random_number,
     string_generator::strings::generate_alphas,
 };
@@ -112,7 +115,7 @@ impl DataGeneration<Conn> for Mysql {
             let mut fk_keys: Vec<String> = vec![];
             for _i in 0..no_of_record {
                 print!("*");
-                io::stdout().flush();
+                let _ = io::stdout().flush();
 
                 let mut values: Vec<String> = vec![];
                 let mut fk_table_data;
@@ -159,10 +162,7 @@ impl DataGeneration<Conn> for Mysql {
                             | db_types::UNSINGED_TINYINT
                             | db_types::MEDIUMINT
                             | db_types::BIGINT
-                            | db_types::UNSINGED_BIGINT
-                            | db_types::DECIMAL
-                            | db_types::FLOAT
-                            | db_types::DOUBLE => {
+                            | db_types::UNSINGED_BIGINT => {
                                 if cd.non_generated {
                                     let next_id =
                                         (has_data(&mut connection, table.table_name.to_owned())
@@ -171,12 +171,31 @@ impl DataGeneration<Conn> for Mysql {
                                     values.push(format!("'{next_id}'",));
 
                                     fk_keys.push(next_id);
-                                } else if int_generator_exists(config, &cd.name)
-                                    && cd.data_type.eq(db_types::INT)
-                                {
+                                } else if int_generator_exists(config, &cd.name) {
                                     values.push(format!(
                                         "'{}'",
                                         generate_int_number(config, &cd.name)
+                                    ));
+                                } else {
+                                    values.push(format!(
+                                        "'{}'",
+                                        generate_numeric(&cd.data_type).unwrap_or("0".to_string())
+                                    ));
+                                }
+                            }
+                            db_types::DECIMAL | db_types::FLOAT | db_types::DOUBLE => {
+                                if cd.non_generated {
+                                    let next_id =
+                                        (has_data(&mut connection, table.table_name.to_owned())
+                                            + 1)
+                                        .to_string();
+                                    values.push(format!("'{next_id}'",));
+
+                                    fk_keys.push(next_id);
+                                } else if float_point_generator_exists(config, &cd.name) {
+                                    values.push(format!(
+                                        "'{}'",
+                                        generate_float_number(config, &cd.name)
                                     ));
                                 } else {
                                     values.push(format!(
@@ -221,7 +240,6 @@ impl DataGeneration<Conn> for Mysql {
                         }
                     }
                 }
-
                 let _r = insert::insert_record(
                     &mut connection,
                     table.table_name.to_owned(),
@@ -256,12 +274,13 @@ impl DataGeneration<Conn> for Mysql {
 
         for t in tables.unwrap() {
             let fields = discover::get_columns(conn, t.to_string());
-            let get_foreign_keys = discover::get_foreign_keys(conn, t.to_string(), schema.to_string());
+            let get_foreign_keys =
+                discover::get_foreign_keys(conn, t.to_string(), schema.to_string());
 
             self.schema.push(TableFields {
                 table_name: t.clone(),
                 fields: fields.unwrap(),
-                rel: get_foreign_keys.unwrap_or(vec![]),
+                rel: get_foreign_keys.unwrap_or_default(),
             })
         }
 
@@ -276,7 +295,7 @@ impl DataGeneration<Conn> for Mysql {
             let mut unsafe_tree: VecDeque<TableFields> = VecDeque::new();
             // TODO check if this is the intented behaviour it's been quite a long time and I don't
             // remember (is safe_tree supposed to be ovewritten?)
-            let (safe_tree, unsafe_tree) =
+            let (_safe_tree, unsafe_tree) =
                 self.build_depedency_tree(&mut safe_tree, &mut unsafe_tree, cyclic);
 
             if unsafe_tree.is_empty() {

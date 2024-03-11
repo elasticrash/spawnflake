@@ -99,7 +99,16 @@
                     99
                 ]
             }
-        ]
+        ],
+		"float" : [
+			{
+				"name": "cost",
+				"rules": [
+					3.19,
+					8.99
+				]
+			}
+		]
     },
     "mysql_configuration": {
         "address": "localhost",

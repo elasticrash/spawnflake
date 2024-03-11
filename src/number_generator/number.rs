@@ -34,6 +34,26 @@ pub fn int_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
     name_generator.is_some()
 }
 
+/// generates a random number (float) based on configuration rules
+pub fn generate_float_number(config: &GenericConfiguration, name: &str) -> f32 {
+    let pattern = config
+        .clone()
+        .types
+        .float
+        .into_iter()
+        .find(|x| x.name == name)
+        .unwrap();
+
+    random_number!(f32)(pattern.rules[0], pattern.rules[1])
+}
+
+/// Checks if a float generator exists
+pub fn float_point_generator_exists(config: &GenericConfiguration, name: &str) -> bool {
+    let name_generator = &config.types.float.iter().find(|x| x.name == name);
+
+    name_generator.is_some()
+}
+
 #[cfg(test)]
 mod tests {
     #[test]

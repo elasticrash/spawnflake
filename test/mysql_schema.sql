@@ -22,7 +22,15 @@ create table if not exists users
 		foreign key (address_id) references address (id)
 );
 
-create table numeric_types
+create table if not exists subscriptions
+(
+	id int auto_increment
+		primary key,
+	product_name varchar(255) null,
+	cost float null
+);
+
+create table if not exists numeric_types
 (
 	id int auto_increment
 		primary key,
