@@ -1,11 +1,12 @@
 # 🐙❄️ Spawnflake(s)
 
 This is the cli tool the loyal companion of the spanwflake libary
+It should work on both windows and linux (mostly tested in linux)
 
-## USAGE
+## Usage
 
 ```
-spawnflakes.exe [OPTIONS]
+spawnflake-cli[.exe] [OPTIONS]
 
 FLAGS:
     -h, --help       Prints help information
@@ -19,5 +20,9 @@ OPTIONS:
 ```
 example
 ```
-spawnflakes.exe -s 4 -c ..\config.json
+spawnflake-cli[.exe] -s 4 -c ..\config.json
 ```
+
+## Installing
+* You can build it from source by cloning this repo and running `cargo build --release`
+* Or you can install it directly from crates.io Just do `cargo install spawnflake-cli`. In this case, though, make sure that `~/.cargo/bin/` is in your PATH variable
