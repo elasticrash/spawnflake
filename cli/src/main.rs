@@ -1,10 +1,13 @@
 use clap::{App, Arg};
-use spawnflake::{configuration::{self, config_model::GenericConfiguration}, datastores::{datastore::DataGeneration, my_sql::datastore_models::Mysql}};
+use spawnflake::{
+    configuration::{self, config_model::GenericConfiguration},
+    datastores::{datastore::DataGeneration, my_sql::datastore_models::Mysql},
+};
 
 fn main() {
     let matches = App::new("Spawnflake CLI")
-    .version("0.2.0")
-    .author("Stefanos Kouroupis. <manekato@gmail.com>")
+    .version("0.2.5")
+    .author("Stefanos Kouroupis. <s.kouroupis@voidmachines.com>")
     .about("Generates random data")
     .arg(Arg::with_name("spawn-size")
          .short("s")
@@ -21,10 +24,7 @@ fn main() {
          .takes_value(true))
     .get_matches();
 
-    
-    let configuration_file: &str = matches
-    .value_of("configuration")
-    .unwrap_or("./config.json");
+    let configuration_file: &str = matches.value_of("configuration").unwrap_or("./config.json");
 
     let config: GenericConfiguration = configuration::reader::read(configuration_file).unwrap();
     let size: i32 = matches
@@ -32,10 +32,7 @@ fn main() {
         .unwrap_or("100")
         .parse()
         .unwrap();
-    let datastore: &str = matches
-        .value_of("datastore")
-        .unwrap_or("all");
-
+    let datastore: &str = matches.value_of("datastore").unwrap_or("all");
 
     if datastore == "all" {
         if config.mysql_configuration != None {
@@ -45,11 +42,11 @@ fn main() {
         }
     }
 
-    if datastore  == "mysql"{
+    if datastore == "mysql" {
         if config.mysql_configuration != None {
             let mut db = Mysql::new();
             db.spawn(&config, size);
-        } else{
+        } else {
             println!("mysql Configuration is missing");
         }
     }

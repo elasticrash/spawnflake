@@ -1,10 +1,18 @@
 [package]
-name = "spawnflakes"
-version = "0.2.3"
-authors = ["stefano <manekato@gmail.com>"]
-edition = "2018"
+name = "spawnflake-cli"
+version = "0.2.5"
+authors = ["Stefanos Kouroupis <s.kouroupis@voidmachines.com>"]
+license = "MIT"
+edition = "2021"
+categories = ["development-tools", "productivity-tools", "command-line-utilities"]
+keywords = ["db", "integration", "testing"]
+description = "Generate random test data for any mysql database schema"
+readme = "README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "spawnflake-cli"
+path = "src/main.rs"
+
 [dependencies]
-spawnflake = "0.2.2"
+spawnflake = "0.2.5"
 clap = "2.33.3"

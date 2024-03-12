@@ -27,7 +27,8 @@ create table if not exists subscriptions
 	id int auto_increment
 		primary key,
 	product_name varchar(255) null,
-	cost float null
+	cost float null,
+	temperature float null
 );
 
 create table if not exists numeric_types

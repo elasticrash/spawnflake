@@ -7,8 +7,9 @@ Spawnflake generates random data and/or based on patterns for relational databas
 See [CHANGELOG](CHANGELOG.md)
 
 ## known limitations
-*  In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
-* if a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+* In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
+* If a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+* In certain cases number validation in the configuration is not performed, so the db can throw errors for out of range values.
 
 ## support 
 * db support
