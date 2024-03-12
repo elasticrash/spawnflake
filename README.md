@@ -3,53 +3,46 @@
 Spawnflake generates random data and/or based on patterns for relational databases.
 
 
-## what's new (v0.2.3)
-* I dropped the Postgres implementation for the time being so I can get back to the project and focus in one database at a time. There is still a branch with the postgres implementation
-* Updated Syntax to be 1.66+ compatible
+## what's new
+See [CHANGELOG](CHANGELOG.md)
 
 ## known limitations
-*  In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
-* if a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+* In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
+* If a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
+* In certain cases number validation in the configuration is not performed, so the db can throw errors for out of range values.
 
 ## support 
 * db support
     - mysql
-* supports the following types and functionality:
+* supports the following types and generators:
 
-| Datastore   | Data type                | Random Data Generator   | Pattern Based Generator   |
-| ----------- | -----------              |-----------              | -----------               |
-| Mysql       | varchar                  | ✔️                      | ✔️                       |
-| Mysql       | int                      | ✔️                      | ✔️                       |
-| Mysql       | unsigned int             | ✔️                      | ❌                       |
-| Mysql       | smallint                 | ✔️                      | ❌                       |
-| Mysql       | unsigned smallint        | ✔️                      | ❌                       |
-| Mysql       | tinyint/unsigned tinyint | ✔️                      | ❌                       |
-| Mysql       | mediumint                | ✔️                      | ❌                       |  
-| Mysql       | bigint                   | ✔️                      | ❌                       |
-| Mysql       | unsigned bigint          | ✔️                      | ❌                       |
-| Mysql       | decimal                  | ✔️                      | ❌                       |
-| Mysql       | float                    | ✔️                      | ❌                       |
-| Mysql       | double                   | ✔️                      | ❌                       |
-| Mysql       | bit                      | ✔️                      | ❌                       |
-| Mysql       | time                     | ✔️                      | ❌                       |
-| Mysql       | timestamp                | ✔️                      | ❌                       |
-| Mysql       | date                     | ✔️                      | ❌                       |
-| Mysql       | year                     | ✔️                      | ❌                       |
-| Mysql       | char                     | ✔️                      | ❌                       |
-| Mysql       | binary                   | ✔️                      | ❌                       |
-| Mysql       | text                     | ✔️                      | ❌                       |
-| Mysql       | longtext                 | ✔️                      | ❌                       |
-| Mysql       | blob/longblob            | ✔️                      | ❌                       |
-| Mysql       | enum                     | ❌                      | ✔️                       |
+| Datastore   | Data type                | Random    | Pattern      | 
+| ----------- | -----------              |-----------| -----------  | 
+| Mysql       | varchar                  | ✔️         | ✔️            |
+| Mysql       | int                      | ✔️         | ✔️            |
+| Mysql       | unsigned int             | ✔️         | ✔️            |
+| Mysql       | smallint                 | ✔️         | ✔️            |
+| Mysql       | unsigned smallint        | ✔️         | ✔️            |
+| Mysql       | tinyint/unsigned tinyint | ✔️         | ✔️            |
+| Mysql       | mediumint                | ✔️         | ✔️            |
+| Mysql       | bigint                   | ✔️         | ✔️            |
+| Mysql       | unsigned bigint          | ✔️         | ✔️            |
+| Mysql       | decimal                  | ✔️         | ✔️            |
+| Mysql       | float                    | ✔️         | ✔️            |
+| Mysql       | double                   | ✔️         | ✔️            |
+| Mysql       | bit                      | ✔️         | ❌           |
+| Mysql       | time                     | ✔️         | ❌           |
+| Mysql       | timestamp                | ✔️         | ❌           |
+| Mysql       | date                     | ✔️         | ❌           |
+| Mysql       | year                     | ✔️         | ❌           |
+| Mysql       | char                     | ✔️         | ❌           |
+| Mysql       | binary                   | ✔️         | ❌           |
+| Mysql       | text                     | ✔️         | ❌           |
+| Mysql       | longtext                 | ✔️         | ❌           |
+| Mysql       | blob/longblob            | ✔️         | ❌           |
+| Mysql       | enum                     | ❌        | ✔️            |
 
 (+) works but not necessary with expected outcome
-
-## breaking changes
-* 0.2.3 postgres no longer supported
-* 0.2.0 was completely refactored, configuration stayed the same
-
-## deprecations
-* 0.1.0 to 0.1.5 is going to be yanked
 
 ## cli 
 a pre release version is available/ check cli/readme.md for usage

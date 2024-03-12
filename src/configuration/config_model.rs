@@ -9,8 +9,12 @@ pub struct GenericConfiguration {
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct ValueTypes {
+    #[serde(default)]
     pub string: Vec<Patterns<Vec<String>>>,
+    #[serde(default)]
     pub integer: Vec<Patterns<i32>>,
+    #[serde(default)]
+    pub float: Vec<Patterns<f32>>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -26,4 +30,14 @@ pub struct RelationalDatabaseConfiguration {
     pub user: String,
     pub password: String,
     pub schema: String,
+}
+
+impl Default for ValueTypes {
+    fn default() -> Self {
+        ValueTypes {
+            string: vec![],
+            integer: vec![],
+            float: vec![],
+        }
+    }
 }

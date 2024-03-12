@@ -99,7 +99,23 @@
                     99
                 ]
             }
-        ]
+        ],
+		"float" : [
+			{
+				"name": "cost",
+				"rules": [
+					3.19,
+					8.99
+				]
+			},
+			{
+				"name": "temperature",
+				"rules": [
+					-20.1,
+					30.9
+				]
+			}
+		]
     },
     "mysql_configuration": {
         "address": "localhost",
