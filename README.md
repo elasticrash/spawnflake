@@ -4,17 +4,17 @@ Spawnflake generates random data and/or based on patterns for relational databas
 
 
 ## what's new
-See [CHANGELOG](CHANGELOG.md)
+See [CHANGELOG](CHANGELOG.md) for updates and new features.
 
 ## known limitations
-* In the cases of handling cyclic dependencies I am not currently updating the keys retrospectively. This is planned for a future version
-* If a foreign key is unique, less records will be inserted on that table (I do not support unique foreign key values yet)
-* In certain cases number validation in the configuration is not performed, so the db can throw errors for out of range values.
+* When handling cyclic dependencies, keys are not currently updated retrospectively. This feature is planned for a future version
+* If a foreign key is unique, fewer records will be inserted into that table. Unique foreign key values are not supported yet.
+* In certain cases, number validation in the configuration is not performed, so the db can throw errors for out of range values.
 
 ## support 
-* db support
-    - mysql
-* supports the following types and generators:
+### Database support 
+#### MySQL
+* supported data types and generators:
 
 | Datastore   | Data type                | Random    | Pattern      | 
 | ----------- | -----------              |-----------| -----------  | 
@@ -42,16 +42,19 @@ See [CHANGELOG](CHANGELOG.md)
 | Mysql       | blob/longblob            | ✔️         | ❌           |
 | Mysql       | enum                     | ❌        | ✔️            |
 
-(+) works but not necessary with expected outcome
-
 ## cli 
-a pre release version is available/ check cli/readme.md for usage
+a pre release version is available/ check [README](cli/readme.md) for usage
 
 ## Running the example
-Running the example requires to run docker-compose inside the test folder. Obviously you need
-* docker
-* an sql client/ or a way to access the mysql cli (so as to see the generated records)
-* cargo run --example generate_mysql
+Running the example requires running `docker-compose` inside the `test` folder. Make sure you have 
+* Docker
+* An SQL client/ or a way to access the MySQL cli to view the generated records
+
+To run the example execute
+
+```bash
+cargo run --example generate_mysql
+```
 
 ## Contributing
 
