@@ -14,5 +14,5 @@ name = "spawnflake-cli"
 path = "src/main.rs"
 
 [dependencies]
-spawnflake = "0.2.5"
+spawnflake = "0.2.6"
 clap = "2.33.3"
