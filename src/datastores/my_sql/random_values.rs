@@ -1,21 +1,23 @@
 use crate::{
-    date_generator::datetime::{generate_date, generate_datetime, generate_time},
+    date_generator::datetime::{date_formats, generate_date_type},
     random_number,
 };
+use mysql::chrono::Datelike;
 
 use super::const_types::db_types;
 
 pub fn generate_date_time(ctype: &str) -> Option<String> {
     if ctype.starts_with(db_types::DATETIME) {
-        Some(generate_datetime())
+        Some(generate_date_type(date_formats::DATETIME_FORMAT))
     } else if ctype.starts_with(db_types::DATE) {
-        Some(generate_date())
+        Some(generate_date_type(date_formats::DATE_FORMAT))
     } else if ctype.starts_with(db_types::TIMESTAMP) {
-        Some(generate_datetime())
+        Some(generate_date_type(date_formats::DATETIME_FORMAT))
     } else if ctype.starts_with(db_types::TIME) {
-        Some(generate_time())
+        Some(generate_date_type(date_formats::TIME_FORMAT))
     } else if ctype.starts_with(db_types::YEAR) {
-        Some(random_number!(i32)(1970, 2021).to_string())
+        let current_date = mysql::chrono::Utc::now();
+        Some(random_number!(i32)(1970, current_date.year()).to_string())
     } else {
         None
     }

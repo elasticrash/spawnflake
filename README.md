@@ -1,7 +1,6 @@
-# 🐙❄️ Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
+# ![a pixel fish](./assets/logo.png "fish") Spawnflake [![Rust](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml/badge.svg)](https://github.com/elasticrash/spawnflake/actions/workflows/rust.yml)
 
-Spawnflake generates random data and/or based on patterns for relational databases.
-
+Spawnflake is a schema agnostic, random and/or patterns based data generator, for MySQL databases.
 
 ## what's new
 See [CHANGELOG](CHANGELOG.md) for updates and new features.
@@ -42,8 +41,9 @@ See [CHANGELOG](CHANGELOG.md) for updates and new features.
 | Mysql       | blob/longblob            | ✔️         | ❌           |
 | Mysql       | enum                     | ❌        | ✔️            |
 
-## cli 
-a pre release version is available/ check [README](cli/readme.md) for usage
+## CLI
+The main project in this repository is a library, but there is also a [CLI version](https://crates.io/crates/spawnflake-cli) available published in crates.io.
+The code for the CLI is available at `./cli`. Check [README](cli/readme.md) for usage and more information.
 
 ## Running the example
 Running the example requires running `docker-compose` inside the `test` folder. Make sure you have 

@@ -1,3 +1,6 @@
+0.2.6 
+* Improve date generator
+
 0.2.5 
 * Support pattern generators for all numeric types
 * Make configuration optional
