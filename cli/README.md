@@ -23,6 +23,11 @@ example
 spawnflake-cli[.exe] -s 4 -c ..\config.json
 ```
 
+## Configuration
+
+* Refer to spawnflake's [README](../README.md) or
+* Check out the sample file provided: [configuration](../config.json)
+
 ## Installing
 * You can build it from source by cloning this repo and running `cargo build --release`
 * Or you can install it directly from crates.io Just do `cargo install spawnflake-cli`. In this case, though, make sure that `~/.cargo/bin/` is in your PATH variable

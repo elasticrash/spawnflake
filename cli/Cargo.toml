@@ -1,6 +1,6 @@
 [package]
 name = "spawnflake-cli"
-version = "0.2.6"
+version = "0.2.7"
 authors = ["Stefanos Kouroupis <s.kouroupis@voidmachines.com>"]
 license = "MIT"
 edition = "2021"
@@ -14,5 +14,5 @@ name = "spawnflake-cli"
 path = "src/main.rs"
 
 [dependencies]
-spawnflake = "0.2.6"
+spawnflake = "0.2.7"
 clap = "2.33.3"

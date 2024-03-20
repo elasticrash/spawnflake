@@ -5,6 +5,76 @@ Spawnflake is a schema agnostic, random and/or patterns based data generator, fo
 ## what's new
 See [CHANGELOG](CHANGELOG.md) for updates and new features.
 
+## usage
+This library works by providing a configuration file (config.json). The configuration is divided into two sections.
+### connection properties (mandatory)
+```json 
+ "mysql_configuration": {
+        "address": "localhost",
+        "port": 3306,
+        "user": "local",
+        "password": "password",
+        "schema": "test"
+    }
+```
+### type patterns (optional)
+```json
+ "types": {
+        "string": [
+            {
+                "name": "column_name",
+                "rules": []
+            }
+        ],
+        "integer": [
+            {
+                "name": "column_name",
+                "rules":[]
+            }
+        ],
+        "float": [
+            {
+                "name": "column_name",
+                "rules":[]
+            }
+        ]
+    }
+```
+### Rules
+* Rules for numeric types just desired ranges
+* Rules for strings are combinatinatory, you provide collections that are mixed and matched.
+i.e.
+
+```json
+   "rules": [
+                    [
+                        "Jo",
+                        "Ni",
+                        "Ste",
+                        "Da",
+                        "Sco",
+                        "Ma"
+                    ],
+                    [
+                        "ve",
+                        "vi",
+                        "pha",
+                        "ro",
+                        "na",
+                        "ri"
+                    ],
+                    [
+                        "n",
+                        "ck",
+                        "tt",
+                        "d",
+                        "than",
+                        "na"
+                    ]
+                ]
+```
+This could create real names like `David` but also complete random combinations like `Jophack`
+
 ## known limitations
 * When handling cyclic dependencies, keys are not currently updated retrospectively. This feature is planned for a future version
 * If a foreign key is unique, fewer records will be inserted into that table. Unique foreign key values are not supported yet.

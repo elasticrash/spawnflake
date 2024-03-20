@@ -31,7 +31,36 @@
                 ]
             },
             {
-                "name": "lastname",
+                "name": "DisplayName",
+                "rules": [
+                    [
+                        "Jo",
+                        "Ni",
+                        "Ste",
+                        "Da",
+                        "Sco",
+                        "Ma"
+                    ],
+                    [
+                        "ve",
+                        "vi",
+                        "pha",
+                        "ro",
+                        "na",
+                        "ri"
+                    ],
+                    [
+                        "n",
+                        "ck",
+                        "tt",
+                        "d",
+                        "than",
+                        "na"
+                    ]
+                ]
+            },
+            {
+                "name": "surname",
                 "rules": [
                     [
                         "Smi",
@@ -70,7 +99,23 @@
                     99
                 ]
             }
-        ]
+        ],
+		"float" : [
+			{
+				"name": "cost",
+				"rules": [
+					3.19,
+					8.99
+				]
+			},
+			{
+				"name": "temperature",
+				"rules": [
+					-20.1,
+					30.9
+				]
+			}
+		]
     },
     "mysql_configuration": {
         "address": "localhost",
