@@ -4,7 +4,7 @@ use crate::datastores::my_sql::const_types::db_types;
 
 /// generates random alpha characters (latin)
 /// character pool: abcdefghijklmnopqrstuvwxyz
-pub fn generate_alphas(string_type: &str) -> String {
+pub fn generate_alphas(string_type: &str) -> Option<String> {
     let chars = "abcdefghijklmnopqrstuvwxyz";
 
     if string_type.eq(db_types::TEXT)
@@ -16,7 +16,7 @@ pub fn generate_alphas(string_type: &str) -> String {
             let rng = rand::thread_rng().gen_range(0..25);
             result = format!("{}{}", result, chars.chars().nth(rng).unwrap());
         }
-        result
+        Some(result)
     } else {
         let start_bytes = string_type.find('(').unwrap_or(0);
         let end_bytes = string_type.find(')').unwrap_or(string_type.len());
@@ -27,7 +27,7 @@ pub fn generate_alphas(string_type: &str) -> String {
             let rng = rand::thread_rng().gen_range(0..25);
             result = format!("{}{}", result, chars.chars().nth(rng).unwrap());
         }
-        result
+        Some(result)
     }
 }
 
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn get_random_alpha_string_with_five_chars() {
-        let alphas = generate_alphas("varchar(5)");
+        let alphas = generate_alphas("varchar(5)").expect("string");
 
         assert_eq!(alphas.len(), 5);
         assert_eq!(alphas.chars().all(char::is_alphabetic), true);
@@ -45,7 +45,7 @@ mod tests {
 
     #[test]
     fn get_random_alpha_string_with_255_chars() {
-        let alphas = generate_alphas("varchar(255)");
+        let alphas = generate_alphas("varchar(255)").expect("string");
 
         assert_eq!(alphas.len(), 255);
         assert_eq!(alphas.chars().all(char::is_alphabetic), true);
