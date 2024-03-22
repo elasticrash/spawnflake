@@ -18,7 +18,7 @@ use crate::{
             const_types::db_types,
             discover,
             insert::{self, has_data},
-            random_values::{generate_date_time, generate_numeric, select_enum},
+            random_values::{generate_date_time, generate_numeric, generate_year, select_enum},
         },
     },
     name_generator::{loader::name_generator_exists, name::generate_name},
@@ -200,12 +200,14 @@ impl DataGeneration<Conn> for Mysql {
                             db_types::DATETIME
                             | db_types::DATE
                             | db_types::TIMESTAMP
-                            | db_types::TIME
-                            | db_types::YEAR => {
+                            | db_types::TIME => {
                                 values.push(format!(
                                     "'{}'",
                                     generate_date_time(&cd.data_type).unwrap()
                                 ));
+                            }
+                            db_types::YEAR => {
+                                values.push(format!("'{}'", generate_year().unwrap()));
                             }
                             db_types::BIT => {
                                 values.push(format!("{}", random_number!(i8)(0, 2)));

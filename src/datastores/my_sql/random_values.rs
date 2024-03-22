@@ -15,12 +15,14 @@ pub fn generate_date_time(ctype: &str) -> Option<String> {
         Some(generate_date_type(date_formats::DATETIME_FORMAT))
     } else if ctype.starts_with(db_types::TIME) {
         Some(generate_date_type(date_formats::TIME_FORMAT))
-    } else if ctype.starts_with(db_types::YEAR) {
-        let current_date = mysql::chrono::Utc::now();
-        Some(random_number!(i32)(1970, current_date.year()).to_string())
     } else {
         None
     }
+}
+
+pub fn generate_year() -> Option<String> {
+    let current_date = mysql::chrono::Utc::now();
+    Some(random_number!(i32)(1970, current_date.year()).to_string())
 }
 
 pub fn generate_numeric(ctype: &str) -> Option<String> {

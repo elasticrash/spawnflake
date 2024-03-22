@@ -7,7 +7,7 @@ pub struct GenericConfiguration {
     pub mysql_configuration: Option<RelationalDatabaseConfiguration>,
 }
 
-#[derive(Deserialize, Clone, Debug, PartialEq)]
+#[derive(Deserialize, Clone, Debug, PartialEq, Default)]
 pub struct ValueTypes {
     #[serde(default)]
     pub string: Vec<Patterns<Vec<String>>>,
@@ -30,14 +30,4 @@ pub struct RelationalDatabaseConfiguration {
     pub user: String,
     pub password: String,
     pub schema: String,
-}
-
-impl Default for ValueTypes {
-    fn default() -> Self {
-        ValueTypes {
-            string: vec![],
-            integer: vec![],
-            float: vec![],
-        }
-    }
 }

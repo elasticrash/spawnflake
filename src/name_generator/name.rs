@@ -6,7 +6,7 @@ use super::loader::loader;
 
 /// generates a name based on chains
 pub fn generate_name(config: &GenericConfiguration, name: &str) -> String {
-    let chain = loader(config, &name);
+    let chain = loader(config, name);
     generate_name_from_chain(&chain)
 }
 
