@@ -1,4 +1,4 @@
-# ![a pixel fish](./assets/logo.png "fish") spawnflake-cli
+# ![a pixel fish](../assets/logo.png "fish") spawnflake-cli
 
 This is the cli tool the loyal companion of the spanwflake libary
 It should work on both windows and linux (mostly tested in linux)
