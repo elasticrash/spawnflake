@@ -41,7 +41,7 @@ This library works by providing a configuration file (config.json). The configur
     }
 ```
 ### Rules
-* Rules for numeric types just desired ranges
+* Rules for numeric types and dates just desired ranges (from, to). **Important!!** the small values need to be first in the lists. 
 * Rules for strings are combinatinatory, you provide collections that are mixed and matched.
 i.e.
 
@@ -78,7 +78,10 @@ This could create real names like `David` but also complete random combinations 
 ## known limitations
 * When handling cyclic dependencies, keys are not currently updated retrospectively. This feature is planned for a future version
 * If a foreign key is unique, fewer records will be inserted into that table. Unique foreign key values are not supported yet.
-* In certain cases, number validation in the configuration is not performed, so the db can throw errors for out of range values.
+* In certain cases, number validation in the configuration is not performed, records assosiated with problematic talbes can be 
+  * skipped
+  * panic
+  * use default values
 
 ## support 
 ### Database support 
@@ -101,7 +104,7 @@ This could create real names like `David` but also complete random combinations 
 | Mysql       | double                   | ✔️         | ✔️            |
 | Mysql       | bit                      | ✔️         | ❌           |
 | Mysql       | time                     | ✔️         | ❌           |
-| Mysql       | timestamp                | ✔️         | ❌           |
+| Mysql       | timestamp                | ✔️         | ✔️            |
 | Mysql       | date                     | ✔️         | ❌           |
 | Mysql       | year                     | ✔️         | ❌           |
 | Mysql       | char                     | ✔️         | ❌           |

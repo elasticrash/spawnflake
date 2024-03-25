@@ -81,3 +81,12 @@ create table if not exists no_auto_increment
 	constraint table_name_address_id_fk
 		foreign key (address_id) references address (id)
 );
+
+
+create table if not exists audit_log
+(
+	id bigint not null
+		primary key,
+	log text null,
+	ts timestamp null
+);

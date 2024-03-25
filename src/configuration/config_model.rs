@@ -15,6 +15,8 @@ pub struct ValueTypes {
     pub integer: Vec<Patterns<i32>>,
     #[serde(default)]
     pub float: Vec<Patterns<f32>>,
+    #[serde(default)]
+    pub datetime: Vec<Patterns<String>>,
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]

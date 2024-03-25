@@ -115,6 +115,15 @@
 					30.9
 				]
 			}
+		],
+		"datetime" : [
+			{
+				"name": "ts",
+				"rules": [
+					"1601364309",
+					"1701364309"
+				]
+			}
 		]
     },
     "mysql_configuration": {

@@ -18,9 +18,10 @@ use crate::{
             const_types::db_types,
             discover,
             insert::{self, has_data},
-            random_values::{generate_date_time, generate_numeric, generate_year, select_enum},
+            random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
+    date_generator::datetime::{datetime_generator_exists, generate_timestamp, generate_year},
     name_generator::{loader::name_generator_exists, name::generate_name},
     number_generator::number::{
         float_point_generator_exists, generate_float_number, generate_int_number,
@@ -197,14 +198,25 @@ impl DataGeneration<Conn> for Mysql {
                                     "0",
                                 );
                             }
-                            db_types::DATETIME
-                            | db_types::DATE
-                            | db_types::TIMESTAMP
-                            | db_types::TIME => {
+                            db_types::DATETIME | db_types::DATE | db_types::TIME => {
                                 values.push(format!(
                                     "'{}'",
                                     generate_date_time(&cd.data_type).unwrap()
                                 ));
+                            }
+                            db_types::TIMESTAMP => {
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    &datetime_generator_exists,
+                                    &generate_timestamp,
+                                    &generate_date_time,
+                                    "1975-03-30 09:10:30",
+                                );
                             }
                             db_types::YEAR => {
                                 values.push(format!("'{}'", generate_year().unwrap()));
