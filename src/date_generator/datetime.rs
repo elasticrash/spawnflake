@@ -69,3 +69,14 @@ pub fn generate_range_date_type(date_format: &str, from: &str, to: &str) -> Stri
     let newdate = datetime.format(date_format);
     newdate.to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::date_generator::datetime::generate_year;
+
+    #[test]
+    fn generate_year_succesfully() {
+        // bits are not supported yet
+        assert!(generate_year().unwrap().parse::<i32>().unwrap_or(1) > 1969);
+    }
+}

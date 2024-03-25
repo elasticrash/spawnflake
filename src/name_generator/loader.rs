@@ -47,6 +47,7 @@ mod tests {
                     }],
                     integer: vec![],
                     float: vec![],
+                    datetime: vec![],
                 },
                 mysql_configuration: Some(RelationalDatabaseConfiguration {
                     address: "".to_string(),
@@ -73,6 +74,7 @@ mod tests {
                     }],
                     integer: vec![],
                     float: vec![],
+                    datetime: vec![],
                 },
                 mysql_configuration: Some(RelationalDatabaseConfiguration {
                     address: "".to_string(),

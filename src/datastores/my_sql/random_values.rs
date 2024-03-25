@@ -109,18 +109,6 @@ mod tests {
     }
 
     #[test]
-    fn generate_year_succesfully() {
-        // bits are not supported yet
-        assert!(
-            generate_date_time("year")
-                .unwrap()
-                .parse::<i32>()
-                .unwrap_or(1)
-                > 1969
-        );
-    }
-
-    #[test]
     fn generate_time_succesfully() {
         // bits are not supported yet
         assert!(generate_date_time("time").unwrap().len() == 8);
