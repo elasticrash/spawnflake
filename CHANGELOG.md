@@ -1,3 +1,5 @@
+0.2.8
+
 0.2.7
 * Improvements in record generation
 * Support for pattern generators for timestamps
