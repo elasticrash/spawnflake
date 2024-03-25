@@ -1,4 +1,4 @@
-# ![a pixel fish](./assets/logo.png "fish") spawnflake-cli
+# ![a pixel fish](../assets/logo.png "fish") spawnflake-cli
 
 This is the cli tool the loyal companion of the spanwflake libary
 It should work on both windows and linux (mostly tested in linux)
@@ -22,6 +22,11 @@ example
 ```
 spawnflake-cli[.exe] -s 4 -c ..\config.json
 ```
+
+## Configuration
+
+* Refer to spawnflake's [README](../README.md) or
+* Check out the sample file provided: [configuration](../config.json)
 
 ## Installing
 * You can build it from source by cloning this repo and running `cargo build --release`

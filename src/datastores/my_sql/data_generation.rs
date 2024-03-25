@@ -1,6 +1,7 @@
 use core::panic;
 use std::{
     collections::VecDeque,
+    fmt::Display,
     io::{self, Write},
     usize,
 };
@@ -20,10 +21,8 @@ use crate::{
             random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
-    name_generator::{
-        loader::{loader, name_generator_exists},
-        name::generate_name,
-    },
+    date_generator::datetime::{datetime_generator_exists, generate_timestamp, generate_year},
+    name_generator::{loader::name_generator_exists, name::generate_name},
     number_generator::number::{
         float_point_generator_exists, generate_float_number, generate_int_number,
         int_generator_exists,
@@ -124,8 +123,21 @@ impl DataGeneration<Conn> for Mysql {
                         let end_bytes = cd.data_type.find('(').unwrap_or(cd.data_type.len());
 
                         match &cd.data_type[0..end_bytes] {
-                            db_types::VARCHAR
-                            | db_types::CHAR
+                            db_types::VARCHAR => {
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    &name_generator_exists,
+                                    &generate_name,
+                                    &generate_alphas,
+                                    "",
+                                );
+                            }
+                            db_types::CHAR
                             | db_types::TEXT
                             | db_types::LONG_TEXT
                             | db_types::MEDIUM_TEXT => {
@@ -137,15 +149,11 @@ impl DataGeneration<Conn> for Mysql {
                                     values.push(format!("'{next_id}'"));
 
                                     fk_keys.push(next_id);
-                                } else if name_generator_exists(config, &cd.name)
-                                    && cd.data_type.contains(db_types::VARCHAR)
-                                {
+                                } else {
                                     values.push(format!(
                                         "'{}'",
-                                        generate_name(&loader(config, &cd.name))
+                                        generate_alphas(&cd.data_type).unwrap()
                                     ));
-                                } else {
-                                    values.push(format!("'{}'", generate_alphas(&cd.data_type)));
                                 }
                             }
                             db_types::BINARY
@@ -163,56 +171,55 @@ impl DataGeneration<Conn> for Mysql {
                             | db_types::MEDIUMINT
                             | db_types::BIGINT
                             | db_types::UNSINGED_BIGINT => {
-                                if cd.non_generated {
-                                    let next_id =
-                                        (has_data(&mut connection, table.table_name.to_owned())
-                                            + 1)
-                                        .to_string();
-                                    values.push(format!("'{next_id}'",));
-
-                                    fk_keys.push(next_id);
-                                } else if int_generator_exists(config, &cd.name) {
-                                    values.push(format!(
-                                        "'{}'",
-                                        generate_int_number(config, &cd.name)
-                                    ));
-                                } else {
-                                    values.push(format!(
-                                        "'{}'",
-                                        generate_numeric(&cd.data_type).unwrap_or("0".to_string())
-                                    ));
-                                }
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    &int_generator_exists,
+                                    &generate_int_number,
+                                    &generate_numeric,
+                                    "0",
+                                );
                             }
                             db_types::DECIMAL | db_types::FLOAT | db_types::DOUBLE => {
-                                if cd.non_generated {
-                                    let next_id =
-                                        (has_data(&mut connection, table.table_name.to_owned())
-                                            + 1)
-                                        .to_string();
-                                    values.push(format!("'{next_id}'",));
-
-                                    fk_keys.push(next_id);
-                                } else if float_point_generator_exists(config, &cd.name) {
-                                    values.push(format!(
-                                        "'{}'",
-                                        generate_float_number(config, &cd.name)
-                                    ));
-                                } else {
-                                    values.push(format!(
-                                        "'{}'",
-                                        generate_numeric(&cd.data_type).unwrap_or("0".to_string())
-                                    ));
-                                }
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    &float_point_generator_exists,
+                                    &generate_float_number,
+                                    &generate_numeric,
+                                    "0",
+                                );
                             }
-                            db_types::DATETIME
-                            | db_types::DATE
-                            | db_types::TIMESTAMP
-                            | db_types::TIME
-                            | db_types::YEAR => {
+                            db_types::DATETIME | db_types::DATE | db_types::TIME => {
                                 values.push(format!(
                                     "'{}'",
                                     generate_date_time(&cd.data_type).unwrap()
                                 ));
+                            }
+                            db_types::TIMESTAMP => {
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    &datetime_generator_exists,
+                                    &generate_timestamp,
+                                    &generate_date_time,
+                                    "1975-03-30 09:10:30",
+                                );
+                            }
+                            db_types::YEAR => {
+                                values.push(format!("'{}'", generate_year().unwrap()));
                             }
                             db_types::BIT => {
                                 values.push(format!("{}", random_number!(i8)(0, 2)));
@@ -414,5 +421,33 @@ impl DataGeneration<Conn> for Mysql {
         Self {
             schema: table_fields,
         }
+    }
+}
+
+fn generate_value<G>(
+    conn: &mut Conn,
+    field: &CdDt,
+    table: &TableFields,
+    values: &mut Vec<String>,
+    fk_keys: &mut Vec<String>,
+    config: &GenericConfiguration,
+    generator_check: &dyn Fn(&GenericConfiguration, &str) -> bool,
+    generator: &dyn Fn(&GenericConfiguration, &str) -> G,
+    randomiser: &dyn Fn(&str) -> Option<String>,
+    default: &str,
+) where
+    G: Display,
+{
+    if field.non_generated {
+        let next_id = (has_data(conn, table.table_name.to_owned()) + 1).to_string();
+        values.push(format!("'{next_id}'",));
+        fk_keys.push(next_id);
+    } else if generator_check(config, &field.name) {
+        values.push(format!("'{}'", generator(config, &field.name)));
+    } else {
+        values.push(format!(
+            "'{}'",
+            randomiser(&field.data_type).unwrap_or(default.to_owned())
+        ));
     }
 }

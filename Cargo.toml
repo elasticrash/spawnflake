@@ -1,7 +1,7 @@
 [package]
 name = "spawnflake"
 description = "Generate pattern based random data for mysql"
-version = "0.2.6"
+version = "0.2.7"
 authors = ["Stefanos Kouroupis <s.kouroupis@voidmachines.com>"]
 edition = "2021"
 repository = "https://github.com/elasticrash/spawnflake"
