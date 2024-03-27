@@ -13,7 +13,10 @@ use crate::{
     configuration::config_model::GenericConfiguration,
     datastores::{
         datastore::DataGeneration,
-        generic::common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
+        generic::{
+            common_models::{CdDt, NullableForeignKeys, TableFields, TempKeys},
+            generator::DataGenerator,
+        },
         my_sql::{
             const_types::db_types,
             discover,
@@ -21,7 +24,7 @@ use crate::{
             random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
-    date_generator::datetime::{datetime_generator_exists, generate_timestamp, generate_year},
+    date_generator::datetime::{datetime_generator_exists, generate_date_objects, generate_year},
     name_generator::{loader::name_generator_exists, name::generate_name},
     number_generator::number::{
         float_point_generator_exists, generate_float_number, generate_int_number,
@@ -131,10 +134,12 @@ impl DataGeneration<Conn> for Mysql {
                                     &mut values,
                                     &mut fk_keys,
                                     config,
-                                    &name_generator_exists,
-                                    &generate_name,
-                                    &generate_alphas,
-                                    "",
+                                    DataGenerator {
+                                        generator_check: Box::new(name_generator_exists),
+                                        generator: Box::new(generate_name),
+                                        randomiser: Box::new(generate_alphas),
+                                        default: "".to_string(),
+                                    },
                                 );
                             }
                             db_types::CHAR
@@ -178,10 +183,12 @@ impl DataGeneration<Conn> for Mysql {
                                     &mut values,
                                     &mut fk_keys,
                                     config,
-                                    &int_generator_exists,
-                                    &generate_int_number,
-                                    &generate_numeric,
-                                    "0",
+                                    DataGenerator {
+                                        generator_check: Box::new(int_generator_exists),
+                                        generator: Box::new(generate_int_number),
+                                        randomiser: Box::new(generate_numeric),
+                                        default: "0".to_string(),
+                                    },
                                 );
                             }
                             db_types::DECIMAL | db_types::FLOAT | db_types::DOUBLE => {
@@ -192,10 +199,12 @@ impl DataGeneration<Conn> for Mysql {
                                     &mut values,
                                     &mut fk_keys,
                                     config,
-                                    &float_point_generator_exists,
-                                    &generate_float_number,
-                                    &generate_numeric,
-                                    "0",
+                                    DataGenerator {
+                                        generator_check: Box::new(float_point_generator_exists),
+                                        generator: Box::new(generate_float_number),
+                                        randomiser: Box::new(generate_numeric),
+                                        default: "0".to_string(),
+                                    },
                                 );
                             }
                             db_types::DATETIME | db_types::DATE | db_types::TIME => {
@@ -212,10 +221,12 @@ impl DataGeneration<Conn> for Mysql {
                                     &mut values,
                                     &mut fk_keys,
                                     config,
-                                    &datetime_generator_exists,
-                                    &generate_timestamp,
-                                    &generate_date_time,
-                                    "1975-03-30 09:10:30",
+                                    DataGenerator {
+                                        generator_check: Box::new(datetime_generator_exists),
+                                        generator: Box::new(generate_date_objects),
+                                        randomiser: Box::new(generate_date_time),
+                                        default: "1975-03-30 09:10:30".to_string(),
+                                    },
                                 );
                             }
                             db_types::YEAR => {
@@ -336,7 +347,7 @@ impl DataGeneration<Conn> for Mysql {
         unsafe_tree: &mut VecDeque<TableFields>,
         cyclic_dependency_check: bool,
     ) -> (VecDeque<TableFields>, VecDeque<TableFields>) {
-        for (_i, tf) in self.schema.clone().into_iter().enumerate() {
+        for tf in self.schema.clone().into_iter() {
             // check if the table exists in the safe tree
             if safe_tree
                 .iter_mut()
@@ -431,10 +442,7 @@ fn generate_value<G>(
     values: &mut Vec<String>,
     fk_keys: &mut Vec<String>,
     config: &GenericConfiguration,
-    generator_check: &dyn Fn(&GenericConfiguration, &str) -> bool,
-    generator: &dyn Fn(&GenericConfiguration, &str) -> G,
-    randomiser: &dyn Fn(&str) -> Option<String>,
-    default: &str,
+    producer: DataGenerator<G>,
 ) where
     G: Display,
 {
@@ -442,12 +450,12 @@ fn generate_value<G>(
         let next_id = (has_data(conn, table.table_name.to_owned()) + 1).to_string();
         values.push(format!("'{next_id}'",));
         fk_keys.push(next_id);
-    } else if generator_check(config, &field.name) {
-        values.push(format!("'{}'", generator(config, &field.name)));
+    } else if (producer.generator_check)(config, &field.name) {
+        values.push(format!("'{}'", (producer.generator)(config, &field.name)));
     } else {
         values.push(format!(
             "'{}'",
-            randomiser(&field.data_type).unwrap_or(default.to_owned())
+            (producer.randomiser)(&field.data_type).unwrap_or(producer.default.to_owned())
         ));
     }
 }

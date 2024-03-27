@@ -26,7 +26,7 @@ pub fn datetime_generator_exists(config: &GenericConfiguration, name: &str) -> b
     name_generator.is_some()
 }
 
-pub fn generate_timestamp(config: &GenericConfiguration, name: &str) -> String {
+pub fn generate_date_objects(config: &GenericConfiguration, name: &str) -> String {
     let pattern = config
         .clone()
         .types
@@ -58,8 +58,8 @@ pub fn generate_range_date_type(date_format: &str, from: &str, to: &str) -> Stri
     let from_unix = from.parse::<i64>();
     let to_unix = to.parse::<i64>();
 
-    let random_timestamp = if from_unix.is_ok() && to_unix.is_ok() {
-        random_number!(i64)(from_unix.unwrap(), to_unix.unwrap())
+    let random_timestamp = if let (Ok(f_unix), Ok(t_unix)) = (from_unix, to_unix) {
+        random_number!(i64)(f_unix, t_unix)
     } else {
         get_unix_timestamp() as i64
     };
