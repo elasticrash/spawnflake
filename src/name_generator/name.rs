@@ -11,7 +11,7 @@ pub fn generate_name(config: &GenericConfiguration, name: &str) -> String {
 }
 
 /// generates a name based on chains
-pub fn generate_name_from_chain(chain: &Vec<Chain>) -> String {
+pub fn generate_name_from_chain(chain: &[Chain]) -> String {
     let mut name_parts: Vec<String> = vec![];
     for (i, c) in chain.iter().enumerate() {
         let token = random_number!(usize)(0, c.tokens.len());

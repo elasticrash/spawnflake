@@ -16,8 +16,7 @@ pub fn insert_record(
 }
 
 pub fn last_id(conn: &mut Conn) -> i64 {
-    let id: Result<Vec<i64>, Error> =
-        conn.query_map("SELECT LAST_INSERT_ID()", |id| id);
+    let id: Result<Vec<i64>, Error> = conn.query_map("SELECT LAST_INSERT_ID()", |id| id);
 
     *id.unwrap().first().unwrap()
 }
