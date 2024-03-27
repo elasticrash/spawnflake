@@ -78,10 +78,11 @@ This could create real names like `David` but also complete random combinations 
 ## known limitations
 * When handling cyclic dependencies, keys are not currently updated retrospectively. This feature is planned for a future version
 * If a foreign key is unique, fewer records will be inserted into that table. Unique foreign key values are not supported yet.
-* In certain cases, number validation in the configuration is not performed, records assosiated with problematic talbes can be 
+* In certain cases, number validation in the configuration is not performed, records assosiated with problematic tables cloud be 
   * skipped
   * panic
   * use default values
+depending on a case by case basis.
 
 ## support 
 ### Database support 
