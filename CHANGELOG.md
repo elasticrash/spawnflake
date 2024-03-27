@@ -1,4 +1,8 @@
 0.2.8
+* Support for pattern generators for date and time types
+* Abstract data_generation function to prepare for different types of SQL databases
+* Adjust unit tests to the new patterns
+* Build with 1.77
 
 0.2.7
 * Improvements in record generation

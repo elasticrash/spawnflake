@@ -104,9 +104,9 @@ depending on a case by case basis.
 | Mysql       | float                    | ✔️         | ✔️            |
 | Mysql       | double                   | ✔️         | ✔️            |
 | Mysql       | bit                      | ✔️         | ❌           |
-| Mysql       | time                     | ✔️         | ❌           |
+| Mysql       | time                     | ✔️         | ✔️            |
 | Mysql       | timestamp                | ✔️         | ✔️            |
-| Mysql       | date                     | ✔️         | ❌           |
+| Mysql       | date                     | ✔️         | ✔️            |
 | Mysql       | year                     | ✔️         | ❌           |
 | Mysql       | char                     | ✔️         | ❌           |
 | Mysql       | binary                   | ✔️         | ❌           |

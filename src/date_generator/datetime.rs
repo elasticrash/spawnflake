@@ -2,7 +2,10 @@ use std::time::SystemTime;
 
 use mysql::chrono::{DateTime, Datelike, NaiveDateTime, Utc};
 
-use crate::{configuration::config_model::GenericConfiguration, random_number};
+use crate::{
+    configuration::config_model::{GenericConfiguration, Patterns},
+    random_number,
+};
 
 pub mod date_formats {
     pub const DATE_FORMAT: &str = "%Y-%m-%d";
@@ -26,20 +29,44 @@ pub fn datetime_generator_exists(config: &GenericConfiguration, name: &str) -> b
     name_generator.is_some()
 }
 
-pub fn generate_date_objects(config: &GenericConfiguration, name: &str) -> String {
-    let pattern = config
-        .clone()
-        .types
-        .datetime
-        .into_iter()
-        .find(|x| x.name == name)
-        .unwrap();
+pub fn generate_datetime_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
 
     generate_range_date_type(
         date_formats::DATETIME_FORMAT,
         &pattern.rules[0],
         &pattern.rules[1],
     )
+}
+
+pub fn generate_date_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
+
+    generate_range_date_type(
+        date_formats::DATE_FORMAT,
+        &pattern.rules[0],
+        &pattern.rules[1],
+    )
+}
+
+pub fn generate_time_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
+
+    generate_range_date_type(
+        date_formats::TIME_FORMAT,
+        &pattern.rules[0],
+        &pattern.rules[1],
+    )
+}
+
+pub fn get_rules(config: &GenericConfiguration, name: &str) -> Patterns<String> {
+    config
+        .clone()
+        .types
+        .datetime
+        .into_iter()
+        .find(|x| x.name == name)
+        .unwrap()
 }
 
 pub fn generate_year() -> Option<String> {

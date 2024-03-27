@@ -24,7 +24,10 @@ use crate::{
             random_values::{generate_date_time, generate_numeric, select_enum},
         },
     },
-    date_generator::datetime::{datetime_generator_exists, generate_date_objects, generate_year},
+    date_generator::datetime::{
+        datetime_generator_exists, generate_date_object, generate_datetime_object,
+        generate_time_object, generate_year,
+    },
     name_generator::{loader::name_generator_exists, name::generate_name},
     number_generator::number::{
         float_point_generator_exists, generate_float_number, generate_int_number,
@@ -207,13 +210,7 @@ impl DataGeneration<Conn> for Mysql {
                                     },
                                 );
                             }
-                            db_types::DATETIME | db_types::DATE | db_types::TIME => {
-                                values.push(format!(
-                                    "'{}'",
-                                    generate_date_time(&cd.data_type).unwrap()
-                                ));
-                            }
-                            db_types::TIMESTAMP => {
+                            db_types::DATE => {
                                 generate_value(
                                     &mut connection,
                                     cd,
@@ -223,7 +220,39 @@ impl DataGeneration<Conn> for Mysql {
                                     config,
                                     DataGenerator {
                                         generator_check: Box::new(datetime_generator_exists),
-                                        generator: Box::new(generate_date_objects),
+                                        generator: Box::new(generate_date_object),
+                                        randomiser: Box::new(generate_date_time),
+                                        default: "1975-03-30 09:10:30".to_string(),
+                                    },
+                                );
+                            }
+                            db_types::TIME => {
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    DataGenerator {
+                                        generator_check: Box::new(datetime_generator_exists),
+                                        generator: Box::new(generate_time_object),
+                                        randomiser: Box::new(generate_date_time),
+                                        default: "1975-03-30 09:10:30".to_string(),
+                                    },
+                                );
+                            }
+                            db_types::TIMESTAMP | db_types::DATETIME => {
+                                generate_value(
+                                    &mut connection,
+                                    cd,
+                                    table,
+                                    &mut values,
+                                    &mut fk_keys,
+                                    config,
+                                    DataGenerator {
+                                        generator_check: Box::new(datetime_generator_exists),
+                                        generator: Box::new(generate_datetime_object),
                                         randomiser: Box::new(generate_date_time),
                                         default: "1975-03-30 09:10:30".to_string(),
                                     },
