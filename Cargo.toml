@@ -1,13 +1,16 @@
 [package]
 name = "spawnflake"
 description = "Generate pattern based random data for mysql"
-version = "0.2.7"
+version = "0.2.8"
 authors = ["Stefanos Kouroupis <s.kouroupis@voidmachines.com>"]
 edition = "2021"
 repository = "https://github.com/elasticrash/spawnflake"
 license = "MIT"
 readme = "README.md"
 keywords = ["data-generator", "database-tools", "integration-testing"]
+
+[profile.release]
+debug = true
 
 [dependencies]
 openssl = { version = "0.10", features = ["vendored"] }

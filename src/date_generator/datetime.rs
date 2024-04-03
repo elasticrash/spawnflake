@@ -2,7 +2,10 @@ use std::time::SystemTime;
 
 use mysql::chrono::{DateTime, Datelike, NaiveDateTime, Utc};
 
-use crate::{configuration::config_model::GenericConfiguration, random_number};
+use crate::{
+    configuration::config_model::{GenericConfiguration, Patterns},
+    random_number,
+};
 
 pub mod date_formats {
     pub const DATE_FORMAT: &str = "%Y-%m-%d";
@@ -26,20 +29,44 @@ pub fn datetime_generator_exists(config: &GenericConfiguration, name: &str) -> b
     name_generator.is_some()
 }
 
-pub fn generate_timestamp(config: &GenericConfiguration, name: &str) -> String {
-    let pattern = config
-        .clone()
-        .types
-        .datetime
-        .into_iter()
-        .find(|x| x.name == name)
-        .unwrap();
+pub fn generate_datetime_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
 
     generate_range_date_type(
         date_formats::DATETIME_FORMAT,
         &pattern.rules[0],
         &pattern.rules[1],
     )
+}
+
+pub fn generate_date_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
+
+    generate_range_date_type(
+        date_formats::DATE_FORMAT,
+        &pattern.rules[0],
+        &pattern.rules[1],
+    )
+}
+
+pub fn generate_time_object(config: &GenericConfiguration, name: &str) -> String {
+    let pattern = get_rules(config, name);
+
+    generate_range_date_type(
+        date_formats::TIME_FORMAT,
+        &pattern.rules[0],
+        &pattern.rules[1],
+    )
+}
+
+pub fn get_rules(config: &GenericConfiguration, name: &str) -> Patterns<String> {
+    config
+        .clone()
+        .types
+        .datetime
+        .into_iter()
+        .find(|x| x.name == name)
+        .unwrap()
 }
 
 pub fn generate_year() -> Option<String> {
@@ -58,8 +85,8 @@ pub fn generate_range_date_type(date_format: &str, from: &str, to: &str) -> Stri
     let from_unix = from.parse::<i64>();
     let to_unix = to.parse::<i64>();
 
-    let random_timestamp = if from_unix.is_ok() && to_unix.is_ok() {
-        random_number!(i64)(from_unix.unwrap(), to_unix.unwrap())
+    let random_timestamp = if let (Ok(f_unix), Ok(t_unix)) = (from_unix, to_unix) {
+        random_number!(i64)(f_unix, t_unix)
     } else {
         get_unix_timestamp() as i64
     };
