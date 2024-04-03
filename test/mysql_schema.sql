@@ -18,6 +18,8 @@ create table if not exists users
 	thing int null,
 	address_id int null,
 	occured_at datetime null,
+	dob date null,
+	tob time null,
 	constraint users_address_id_fk
 		foreign key (address_id) references address (id)
 );
