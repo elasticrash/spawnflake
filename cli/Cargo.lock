@@ -951,9 +951,9 @@ dependencies = [
 
 [[package]]
 name = "spawnflake"
-version = "0.2.8"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e6e14d24664ca16717931f6f5912e3961b88b4b751b9cc81f026482e929a210"
+checksum = "200bf26e66207c161bb5229ed3f84e2c427aefb4cebc7bf6cccb402e187f554c"
 dependencies = [
  "mysql",
  "openssl",
@@ -964,7 +964,7 @@ dependencies = [
 
 [[package]]
 name = "spawnflake-cli"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "clap",
  "spawnflake",

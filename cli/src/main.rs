@@ -27,7 +27,7 @@ fn main() {
     let configuration_file: &str = matches.value_of("configuration").unwrap_or("./config.json");
 
     let config: GenericConfiguration = configuration::reader::read(configuration_file).unwrap();
-    let size: i32 = matches
+    let size: u32 = matches
         .value_of("spawn-size")
         .unwrap_or("100")
         .parse()
