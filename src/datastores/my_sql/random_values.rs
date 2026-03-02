@@ -71,11 +71,11 @@ pub fn generate_numeric(ctype: &str) -> Option<String> {
                 ));
             }
         }
-        return Some(format!(
+        Some(format!(
             "{}.{}",
             random_number!(i32)(1, 10),
             random_number!(i32)(1, 10),
-        ));
+        ))
     } else if ctype.starts_with(db_types::FLOAT) {
         Some(random_number!(f32)(0., f32::MAX).to_string())
     } else {

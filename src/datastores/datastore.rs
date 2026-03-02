@@ -3,7 +3,7 @@ use crate::configuration::config_model::GenericConfiguration;
 use std::collections::VecDeque;
 
 pub trait DataGeneration<T> {
-    fn spawn(&mut self, config: &GenericConfiguration, no_of_record: i32);
+    fn spawn(&mut self, config: &GenericConfiguration, no_of_record: u32);
     fn set_schema(&mut self, conn: &mut T, schema: &str);
     fn new() -> Self;
     fn build_depedency_tree(

@@ -9,14 +9,14 @@ pub fn generate_bytes(binary_type: &str) -> String {
         let capacity = v_size.parse::<usize>().unwrap_or(1);
         for _i in 0..capacity {
             result = format!("{}{:X}", result, random_number!(i32)(0, 16));
-            if result.len() % 2 != 0 {
+            if !result.len().is_multiple_of(2) {
                 result = format!("0{result}");
             }
         }
     } else if binary_type.eq(sqlt::BLOB) || binary_type.eq(sqlt::LONG_BLOB) {
         for _i in 0..50 {
             result = format!("{}{:X}", result, random_number!(i32)(0, 16));
-            if result.len() % 2 != 0 {
+            if !result.len().is_multiple_of(2) {
                 result = format!("0{result}");
             }
         }

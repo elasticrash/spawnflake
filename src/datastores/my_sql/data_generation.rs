@@ -3,7 +3,6 @@ use std::{
     collections::VecDeque,
     fmt::Display,
     io::{self, Write},
-    usize,
 };
 
 use mysql::{Conn, Opts};
@@ -40,7 +39,7 @@ use crate::{
 use super::datastore_models::Mysql;
 
 impl DataGeneration<Conn> for Mysql {
-    fn spawn(&mut self, config: &GenericConfiguration, no_of_record: i32) {
+    fn spawn(&mut self, config: &GenericConfiguration, no_of_record: u32) {
         let db_configuration = match &config.mysql_configuration {
             Some(config) => config,
             None => {
