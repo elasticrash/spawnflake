@@ -1,3 +1,8 @@
+0.2.9
+* Change `spawn` record count and CLI `spawn-size` from `i32` to `u32`
+* Use `is_multiple_of` for byte padding checks instead of modulo
+* Minor code improvements and dependency updates
+
 0.2.8
 * Support for pattern generators for date and time types
 * Abstract data_generation function to prepare for different types of SQL databases
